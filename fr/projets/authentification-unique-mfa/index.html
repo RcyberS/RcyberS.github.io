@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Authentification unique avec MFA | Stephanio RAZARISON</title>
+<meta name="description" content="Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier.">
+<link rel="canonical" href="https://rcybers.github.io/fr/projets/authentification-unique-mfa/">
+<link rel="alternate" hreflang="en" href="https://rcybers.github.io/projects/single-sign-on-mfa/"><link rel="alternate" hreflang="fr" href="https://rcybers.github.io/fr/projets/authentification-unique-mfa/"><link rel="alternate" hreflang="x-default" href="https://rcybers.github.io/projects/single-sign-on-mfa/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Stephanio RAZARISON">
+<meta property="og:title" content="Authentification unique avec MFA | Stephanio RAZARISON">
+<meta property="og:description" content="Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier.">
+<meta property="og:url" content="https://rcybers.github.io/fr/projets/authentification-unique-mfa/">
+<meta property="og:image" content="https://rcybers.github.io/assets/img/og-fr.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stephanio RAZARISON, Spécialiste en cybersécurité | Sécurité défensive, offensive et cloud">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Authentification unique avec MFA | Stephanio RAZARISON">
+<meta name="twitter:description" content="Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier.">
+<meta name="twitter:image" content="https://rcybers.github.io/assets/img/og-fr.png">
+<meta name="theme-color" content="#0A1220">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/sora.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/main.min.css?v=20261119">
+<script src="/assets/js/theme.min.js?v=20261119"></script>
+<script defer src="/assets/js/main.min.js?v=20261119"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://rcybers.github.io/fr/"}, {"@type": "ListItem", "position": 2, "name": "Projets", "item": "https://rcybers.github.io/fr/projets/"}, {"@type": "ListItem", "position": 3, "name": "Authentification unique avec MFA", "item": "https://rcybers.github.io/fr/projets/authentification-unique-mfa/"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "CreativeWork", "name": "Authentification unique avec MFA", "description": "Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier.", "url": "https://rcybers.github.io/fr/projets/authentification-unique-mfa/", "inLanguage": "fr", "author": {"@id": "https://rcybers.github.io/#person"}, "keywords": "Keycloak, Active Directory, Kerberos, OIDC, SAML"}</script>
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/fr/"><span class="brand-mark" aria-hidden="true">SR</span><span class="brand-name">Stephanio RAZARISON</span><span class="sr-only">, Accueil</span></a>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Langue"><a href="/projects/single-sign-on-mfa/" hreflang="en" lang="en"><span class="sr-only">English</span><span aria-hidden="true">EN</span></a><span aria-current="true" lang="fr"><span class="sr-only">Français</span><span aria-hidden="true">FR</span></span></div>
+      <button class="icon-btn theme-toggle" type="button" aria-pressed="true"><span class="sr-only">Thème sombre</span><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button class="icon-btn menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="sr-only">Menu</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    <nav class="nav" id="site-nav" aria-label="Principale"><ul><li><a href="/fr/">Accueil</a></li><li><a href="/fr/projets/" aria-current="page">Projets</a></li><li><a href="/fr/a-propos/">À propos</a></li><li><a href="/fr/contact/">Contact</a></li></ul></nav>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+<div class="page-head"><div class="wrap"><nav class="crumbs" aria-label="Fil d'Ariane"><ol><li><a href="/fr/">Accueil</a></li><li><a href="/fr/projets/">Projets</a></li><li><span aria-current="page">Authentification unique avec MFA</span></li></ol></nav><h1>Authentification unique avec MFA</h1><p>Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier.</p></div></div><section class="section"><div class="wrap detail">
+<div class="body"><h2>L'objectif</h2>
+<p>Chaque application avait ses propres comptes et mots de passe. Plus de comptes, c'est plus de mots de passe à voler, et des accès oubliés quelque part quand quelqu'un part.</p>
+<h2>Ce que j'ai déployé</h2>
+<div class="diagram"><ol class="flow"><li>Active Directory</li><li class="arrow" aria-hidden="true">→</li><li>Keycloak + MFA</li><li class="arrow" aria-hidden="true">→</li><li>Applications</li></ol></div>
+<ul class="list">
+<li><strong>Keycloak</strong> comme fournisseur d'identité, relié à Active Directory et Kerberos : chacun utilise son compte habituel de l'entreprise.</li>
+<li><strong>MFA par mot de passe à usage unique</strong> en plus du mot de passe.</li>
+<li>Applications raccordées en <strong>OIDC</strong> ou <strong>SAML</strong>, dont Wazuh, Shuffle, Zimbra, Microsoft 365, Bitdefender GravityZone, KaseyaOne, le wiki interne et l'ERP interne.</li>
+</ul>
+<h2>Résultat</h2>
+<p>Chacun n'a plus qu'un compte à protéger, et la suppression d'un accès se fait à un seul endroit.</p>
+<nav class="pager" aria-label="Projets">
+<a href="/fr/projets/playbooks-reponse-incident/"><span class="sr-only">Projet précédent: </span>← Playbooks et runbooks de réponse à incident</a>
+<a href="/fr/projets/creation-soc/"><span class="sr-only">Projet suivant: </span>Créer un SOC à partir de zéro →</a>
+</nav></div>
+<aside class="aside" aria-label="Résumé du projet"><dl>
+<div><dt>Mon rôle</dt><dd>Conception et déploiement</dd></div>
+<div><dt>Où</dt><dd>AVEOLYS, Antananarivo</dd></div>
+<div><dt>Quand</dt><dd>Depuis 2023</dd></div>
+<div><dt>Outils</dt><dd><ul class="chips"><li>Keycloak</li><li>Active Directory</li><li>Kerberos</li><li>OIDC</li><li>SAML</li></ul></dd></div>
+</dl></aside>
+</div></section><section class="section" aria-labelledby="cta-title"><div class="wrap"><div class="cta">
+<h2 id="cta-title">Besoin de sécuriser vos systèmes ?</h2><p>Mise en place ou réglage d'un SOC, réponse à incident, tests d'intrusion ou audit Active Directory. Je travaille à distance, en français ou en anglais.</p>
+<div class="actions"><a class="btn btn-primary" href="/fr/contact/">Me contacter</a><a class="btn btn-ghost" href="/fr/a-propos/">Voir mon parcours</a></div>
+</div></div></section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© 2026 Stephanio RAZARISON</p>
+    <ul><li><a href="/fr/confidentialite/">Politique de confidentialité</a></li><li><a href="/fr/mentions-legales/">Mentions légales</a></li><li><a href="https://www.linkedin.com/in/razarison-romeo-bienvenu-stephanio-1a72b618a" rel="noopener">LinkedIn</a></li><li><a href="https://www.upwork.com/freelancers/~019a0f7d8cf53fce56" rel="noopener">Upwork</a></li></ul>
+  </div>
+</footer>
+</body>
+</html>
