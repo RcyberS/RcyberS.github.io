@@ -71,7 +71,7 @@ EXPERIENCE = {
             "Lead the team through the full incident lifecycle: detection, qualification, investigation, containment and post-incident review.",
             "Wrote the custom detection rules for mail, the web application firewall, Microsoft 365 and Active Directory, each mapped to MITRE ATT&amp;CK.",
             "Wrote the incident response playbooks and runbooks, keep them up to date after each incident, and run tabletop exercises.",
-            "Carry out penetration tests and security audits for client companies, and Active Directory audits with the ANSSI's ORADAD tool.",
+            "Lead penetration tests and security audits for AVEOLYS clients from start to finish, and Active Directory audits with the ANSSI's ORADAD tool.",
             "Deployed Keycloak single sign-on with MFA for internal and client applications.",
             "Operate Sophos, Stormshield and Forcepoint firewalls, Suricata IDS/IPS, a WAF and Bitdefender GravityZone."]},
         {"when": "May 2021 – June 2023", "title": "Network &amp; Security Engineer", "org": "Huawei Technologies Madagascar", "items": [
@@ -79,11 +79,14 @@ EXPERIENCE = {
             "Designed and ran MPLS, IPsec VPN, OSPF and BGP networks, with VLAN segmentation, 802.1X access control and VRRP redundancy.",
             "Contributed to identity and access management and to business continuity and disaster recovery plans."]},
         {"when": "June – August 2019", "title": "IT Security Intern", "org": "MICTSL (Madagascar International Container Terminal Services Ltd)", "items": [
-            "Implemented SolarWinds Security Event Manager (SEM) as the company's SIEM.",
-            "Connected the network devices and servers to SEM so their security logs were collected in one place.",
-            "Set up alert rules and reports in SEM to spot suspicious events.",
-            "Applied security patches to workstations and servers.",
-            "Supported the administration of the LAN and Wi-Fi network."]},
+            "Implemented SolarWinds Security Event Manager (SEM, formerly Log &amp; Event Manager) as the company's SIEM.",
+            "Deployed the SEM virtual appliance on the hypervisor and sized it for the expected log volume.",
+            "Installed SEM agents on the Windows servers and the domain controller to collect Windows event logs and antivirus logs.",
+            "Configured the firewall and network devices to send their logs to SEM over syslog, and enabled the matching connectors to normalize them.",
+            "Built detection rules for repeated failed logins, account lockouts, changes to admin groups and traffic blocked by the firewall.",
+            "Set up email alerting through the company's mail server, with an email template for each rule.",
+            "Created dashboards and scheduled reports for the IT team, and tuned the rules to reduce false positives.",
+            "Applied security patches to workstations and servers, and supported the administration of the LAN and Wi-Fi network."]},
     ],
     "fr": [
         {"when": "Juillet 2023 – aujourd'hui", "title": "SOC Team Lead", "org": "AVEOLYS, Antananarivo", "items": [
@@ -91,7 +94,7 @@ EXPERIENCE = {
             "Pilotage de l'équipe sur tout le cycle de vie des incidents : détection, qualification, investigation, confinement et retour d'expérience.",
             "Rédaction des règles de détection sur mesure pour la messagerie, le WAF, Microsoft 365 et Active Directory, chacune reliée à MITRE ATT&amp;CK.",
             "Rédaction des playbooks et runbooks de réponse à incident, mis à jour après chaque incident, et animation d'exercices sur table.",
-            "Tests d'intrusion et audits de sécurité pour des entreprises clientes, et audits Active Directory avec l'outil ORADAD de l'ANSSI.",
+            "Responsable des tests d'intrusion et audits de sécurité pour les clients d'AVEOLYS, du début à la fin, et des audits Active Directory avec l'outil ORADAD de l'ANSSI.",
             "Déploiement de l'authentification unique Keycloak avec MFA pour les applications internes et clientes.",
             "Exploitation de pare-feu Sophos, Stormshield et Forcepoint, de l'IDS/IPS Suricata, d'un WAF et de Bitdefender GravityZone."]},
         {"when": "Mai 2021 – juin 2023", "title": "Ingénieur réseau et sécurité", "org": "Huawei Technologies Madagascar", "items": [
@@ -99,11 +102,14 @@ EXPERIENCE = {
             "Conception et exploitation de réseaux MPLS, VPN IPsec, OSPF et BGP, avec segmentation VLAN, contrôle d'accès 802.1X et redondance VRRP.",
             "Participation à la gestion des identités et des accès, et aux plans de continuité et de reprise d'activité."]},
         {"when": "Juin – août 2019", "title": "Stagiaire en sécurité informatique", "org": "MICTSL (Madagascar International Container Terminal Services Ltd)", "items": [
-            "Mise en place de SolarWinds Security Event Manager (SEM) comme SIEM de l'entreprise.",
-            "Raccordement des équipements réseau et des serveurs à SEM pour centraliser leurs journaux de sécurité.",
-            "Configuration de règles d'alerte et de rapports dans SEM pour repérer les événements suspects.",
-            "Application des correctifs de sécurité sur les postes et les serveurs.",
-            "Appui à l'administration du réseau local et du Wi-Fi."]},
+            "Mise en place de SolarWinds Security Event Manager (SEM, anciennement Log &amp; Event Manager) comme SIEM de l'entreprise.",
+            "Déploiement de l'appliance virtuelle SEM sur l'hyperviseur, dimensionnée selon le volume de journaux attendu.",
+            "Installation des agents SEM sur les serveurs Windows et le contrôleur de domaine pour collecter les journaux d'événements Windows et ceux de l'antivirus.",
+            "Configuration du pare-feu et des équipements réseau pour envoyer leurs journaux à SEM en syslog, et activation des connecteurs correspondants pour les normaliser.",
+            "Création de règles de détection : échecs de connexion répétés, verrouillages de comptes, modifications des groupes d'administration et trafic bloqué par le pare-feu.",
+            "Mise en place des alertes par e-mail via le serveur de messagerie de l'entreprise, avec un modèle d'e-mail par règle.",
+            "Création de tableaux de bord et de rapports planifiés pour l'équipe IT, et réglage des règles pour limiter les faux positifs.",
+            "Application des correctifs de sécurité sur les postes et les serveurs, et appui à l'administration du réseau local et du Wi-Fi."]},
     ],
 }
 
@@ -227,15 +233,16 @@ PROJECTS = [
   {
     "slug": {"en": "penetration-tests", "fr": "tests-d-intrusion"},
     "title": {"en": "Penetration tests and security audits", "fr": "Tests d'intrusion et audits de sécurité"},
-    "summary": {"en": "Security testing for companies in Antananarivo and Toamasina: Odity, Galana GDP and Galana GRT.",
-                "fr": "Tests de sécurité pour des entreprises d'Antananarivo et de Toamasina : Odity, Galana GDP et Galana GRT."},
+    "summary": {"en": "Security tests I led from start to finish for AVEOLYS clients in Antananarivo and Toamasina: Odity, Galana GDP and Galana GRT.",
+                "fr": "Tests de sécurité que j'ai menés du début à la fin pour des clients d'AVEOLYS à Antananarivo et Toamasina : Odity, Galana GDP et Galana GRT."},
     "meta": {"en": "AVEOLYS clients", "fr": "Clients d'AVEOLYS"},
-    "role": {"en": "Penetration tester and auditor", "fr": "Pentesteur et auditeur"},
-    "org": {"en": "Antananarivo and Toamasina", "fr": "Antananarivo et Toamasina"},
+    "role": {"en": "Engagement lead, from scoping to follow-up", "fr": "Responsable de la mission, du cadrage au suivi"},
+    "org": {"en": "AVEOLYS clients, Antananarivo and Toamasina", "fr": "Clients d'AVEOLYS, Antananarivo et Toamasina"},
     "period": {"en": "Since 2023", "fr": "Depuis 2023"},
     "tools": ["BloodHound", "Impacket", "Mimikatz", "OpenVAS", "PingCastle"],
     "body": {
       "en": """<h2>Clients</h2>
+<p>These are clients of AVEOLYS. I was responsible for each engagement from start to finish, from agreeing the scope to checking the fixes.</p>
 <ul class="list">
 <li><strong>Odity</strong>, Antananarivo</li>
 <li><strong>Galana GDP</strong>, Antananarivo</li>
@@ -253,6 +260,7 @@ PROJECTS = [
 </ul>
 <p class="note">Findings belong to each client and are never published here.</p>""",
       "fr": """<h2>Clients</h2>
+<p>Ce sont des clients d'AVEOLYS. J'ai été responsable de chaque mission du début à la fin, de la définition du périmètre à la vérification des corrections.</p>
 <ul class="list">
 <li><strong>Odity</strong>, Antananarivo</li>
 <li><strong>Galana GDP</strong>, Antananarivo</li>
