@@ -11,7 +11,7 @@ LAST_UPDATED = "2026-11-19"
 
 # Google Analytics 4 Measurement ID (starts with "G-"). Loads only after the visitor accepts cookies.
 # Leave empty to show no banner and load no Google script.
-GA4_ID = ""
+GA4_ID = "G-TSN77KXPZG"
 
 # Cloudflare Web Analytics (cookie-free). Paste the token from
 # dash.cloudflare.com > Analytics & Logs > Web Analytics > Add a site > "JS snippet" (the "token" value).
