@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; form-action 'self'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>About | Stephanio RAZARISON</title>
 <meta name="description" content="Experience at AVEOLYS, Huawei Technologies Madagascar and MICTSL, skills, certifications and education of Stephanio RAZARISON.">
@@ -62,10 +62,14 @@
 <div class="actions"><a class="btn btn-primary" href="/contact/">Get in touch</a><a class="btn btn-ghost" href="/about/">See my experience</a></div>
 </div></div></section>
 </main>
+<section class="consent" id="consent" data-ga="G-TSN77KXPZG" aria-labelledby="consent-title" hidden>
+<div class="consent-text"><h2 id="consent-title">Cookies for visit statistics</h2><p>With your permission, I use Google Analytics to count visits and see which pages are read. It sets cookies. If you decline, nothing is loaded. <a href="/privacy/">Privacy policy</a></p></div>
+<div class="consent-actions"><button class="btn btn-ghost" type="button" data-consent="denied">Decline</button><button class="btn btn-ghost" type="button" data-consent="granted">Accept</button></div>
+</section>
 <footer class="site-footer">
   <div class="wrap">
     <p>© 2026 Stephanio RAZARISON</p>
-    <ul><li><a href="/privacy/">Privacy policy</a></li><li><a href="/legal/">Legal notice</a></li><li><a href="https://www.linkedin.com/in/razarison-romeo-bienvenu-stephanio-1a72b618a" rel="noopener">LinkedIn</a></li><li><a href="https://www.upwork.com/freelancers/~019a0f7d8cf53fce56" rel="noopener">Upwork</a></li></ul>
+    <ul><li><a href="/privacy/">Privacy policy</a></li><li><a href="/legal/">Legal notice</a></li><li><button class="linkish" type="button" data-consent-open>Cookie settings</button></li><li><a href="https://www.linkedin.com/in/razarison-romeo-bienvenu-stephanio-1a72b618a" rel="noopener">LinkedIn</a></li><li><a href="https://www.upwork.com/freelancers/~019a0f7d8cf53fce56" rel="noopener">Upwork</a></li></ul>
   </div>
 </footer>
 </body>

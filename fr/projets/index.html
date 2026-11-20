@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://*.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; form-action 'self'; base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Projets | Stephanio RAZARISON</title>
 <meta name="description" content="Études de cas : création d&#x27;un SOC, ingénierie de détection, tests d&#x27;intrusion, audits Active Directory, playbooks de réponse à incident et authentification unique.">
@@ -85,10 +85,14 @@
 <div class="actions"><a class="btn btn-primary" href="/fr/contact/">Me contacter</a><a class="btn btn-ghost" href="/fr/a-propos/">Voir mon parcours</a></div>
 </div></div></section>
 </main>
+<section class="consent" id="consent" data-ga="G-TSN77KXPZG" aria-labelledby="consent-title" hidden>
+<div class="consent-text"><h2 id="consent-title">Cookies de statistiques</h2><p>Avec votre accord, j'utilise Google Analytics pour compter les visites et voir quelles pages sont lues. Ce service dépose des cookies. Si vous refusez, rien n'est chargé. <a href="/fr/confidentialite/">Politique de confidentialité</a></p></div>
+<div class="consent-actions"><button class="btn btn-ghost" type="button" data-consent="denied">Refuser</button><button class="btn btn-ghost" type="button" data-consent="granted">Accepter</button></div>
+</section>
 <footer class="site-footer">
   <div class="wrap">
     <p>© 2026 Stephanio RAZARISON</p>
-    <ul><li><a href="/fr/confidentialite/">Politique de confidentialité</a></li><li><a href="/fr/mentions-legales/">Mentions légales</a></li><li><a href="https://www.linkedin.com/in/razarison-romeo-bienvenu-stephanio-1a72b618a" rel="noopener">LinkedIn</a></li><li><a href="https://www.upwork.com/freelancers/~019a0f7d8cf53fce56" rel="noopener">Upwork</a></li></ul>
+    <ul><li><a href="/fr/confidentialite/">Politique de confidentialité</a></li><li><a href="/fr/mentions-legales/">Mentions légales</a></li><li><button class="linkish" type="button" data-consent-open>Gestion des cookies</button></li><li><a href="https://www.linkedin.com/in/razarison-romeo-bienvenu-stephanio-1a72b618a" rel="noopener">LinkedIn</a></li><li><a href="https://www.upwork.com/freelancers/~019a0f7d8cf53fce56" rel="noopener">Upwork</a></li></ul>
   </div>
 </footer>
 </body>
