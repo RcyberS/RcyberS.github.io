@@ -140,4 +140,53 @@
         .then(function () { btn.disabled = false; });
     });
   }
+
+  // Cookie consent + Google Analytics (loads only after "Accept")
+  var banner = document.getElementById("consent");
+  if (banner) {
+    var GA = banner.getAttribute("data-ga"), MAX = 395 * 864e5; // about 13 months
+    var read = function () {
+      try { var c = JSON.parse(localStorage.getItem("consent")); if (c && Date.now() - c.t < MAX) return c.v; } catch (e) {}
+      return null;
+    };
+    var loadGA = function () {
+      if (window.gaLoaded) return; window.gaLoaded = true;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", GA);
+      var s = document.createElement("script"); s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA);
+      document.head.appendChild(s);
+    };
+    var clearGA = function () {
+      document.cookie.split(";").forEach(function (c) {
+        var n = c.split("=")[0].trim();
+        if (n.indexOf("_ga") === 0) {
+          var host = location.hostname, parts = host.split(".");
+          [host, "." + host, "." + parts.slice(-2).join(".")].forEach(function (d) {
+            document.cookie = n + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=" + d;
+          });
+          document.cookie = n + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+        }
+      });
+    };
+    var opener = null;
+    var show = function () { banner.hidden = false; };
+    var hide = function () { banner.hidden = true; if (opener) { opener.focus(); opener = null; } };
+    var choice = read();
+    if (choice === "granted") loadGA(); else if (choice !== "denied") show();
+    banner.querySelectorAll("[data-consent]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var v = b.getAttribute("data-consent"), before = read();
+        try { localStorage.setItem("consent", JSON.stringify({ v: v, t: Date.now() })); } catch (e) {}
+        hide();
+        if (v === "granted") loadGA();
+        else if (before === "granted" || window.gaLoaded) { clearGA(); location.reload(); }
+      });
+    });
+    document.querySelectorAll("[data-consent-open]").forEach(function (b) {
+      b.addEventListener("click", function () { opener = b; show(); banner.querySelector("[data-consent]").focus(); });
+    });
+  }
 })();
