@@ -9,6 +9,10 @@ CITY = "Antananarivo"
 COUNTRY = "Madagascar"
 LAST_UPDATED = "2026-11-19"
 
+# Google Analytics 4 Measurement ID (starts with "G-"). Loads only after the visitor accepts cookies.
+# Leave empty to show no banner and load no Google script.
+GA4_ID = ""
+
 # Cloudflare Web Analytics (cookie-free). Paste the token from
 # dash.cloudflare.com > Analytics & Logs > Web Analytics > Add a site > "JS snippet" (the "token" value).
 # Leave empty to load no analytics at all.

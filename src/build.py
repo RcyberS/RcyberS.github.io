@@ -25,13 +25,18 @@ def csp():
     script = ["'self'"]
     connect = ["'self'"]
     form = ["'self'"]
+    img = ["'self'", "data:"]
     if CF_ANALYTICS_TOKEN:
         script.append("https://static.cloudflareinsights.com")
         connect.append("https://cloudflareinsights.com")
+    if GA4_ID:
+        script.append("https://*.googletagmanager.com")
+        connect += ["https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"]
+        img += ["https://*.google-analytics.com", "https://*.googletagmanager.com"]
     if WEB3FORMS_KEY:
         connect.append("https://api.web3forms.com")
         form.append("https://api.web3forms.com")
-    return ("default-src 'self'; script-src " + " ".join(script) + "; style-src 'self'; img-src 'self' data:; "
+    return ("default-src 'self'; script-src " + " ".join(script) + "; style-src 'self'; img-src " + " ".join(img) + "; "
             "font-src 'self'; connect-src " + " ".join(connect) + "; form-action " + " ".join(form) + "; "
             "base-uri 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests")
 
@@ -65,6 +70,30 @@ def crumbs_html(lang, items):
             li.append(f'<li><a href="{p}">{n}</a></li>')
     label = "Breadcrumb" if lang == "en" else "Fil d'Ariane"
     return f'<nav class="crumbs" aria-label="{label}"><ol>{"".join(li)}</ol></nav>'
+
+
+def consent_html(lang):
+    if not GA4_ID:
+        return ""
+    if lang == "en":
+        t, d, acc, dec, more = ("Cookies for visit statistics",
+            "With your permission, I use Google Analytics to count visits and see which pages are read. It sets cookies. If you decline, nothing is loaded.",
+            "Accept", "Decline", "Privacy policy")
+    else:
+        t, d, acc, dec, more = ("Cookies de statistiques",
+            "Avec votre accord, j'utilise Google Analytics pour compter les visites et voir quelles pages sont lues. Ce service dépose des cookies. Si vous refusez, rien n'est chargé.",
+            "Accepter", "Refuser", "Politique de confidentialité")
+    return f"""<section class="consent" id="consent" data-ga="{GA4_ID}" aria-labelledby="consent-title" hidden>
+<div class="consent-text"><h2 id="consent-title">{t}</h2><p>{d} <a href="{PATHS['privacy'][lang]}">{more}</a></p></div>
+<div class="consent-actions"><button class="btn btn-ghost" type="button" data-consent="denied">{dec}</button><button class="btn btn-ghost" type="button" data-consent="granted">{acc}</button></div>
+</section>
+"""
+
+def consent_link(lang):
+    if not GA4_ID:
+        return ""
+    label = "Cookie settings" if lang == "en" else "Gestion des cookies"
+    return f'<li><button class="linkish" type="button" data-consent-open>{label}</button></li>'
 
 # ---------- layout ----------
 def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="website", noindex=False):
@@ -149,10 +178,10 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <main id="main" tabindex="-1">
 {body}
 </main>
-<footer class="site-footer">
+{consent_html(lang)}<footer class="site-footer">
   <div class="wrap">
     <p>{ui['footer_rights']}</p>
-    <ul>{footer_links}<li><a href="{LINKEDIN}" rel="noopener">LinkedIn</a></li><li><a href="{UPWORK}" rel="noopener">Upwork</a></li></ul>
+    <ul>{footer_links}{consent_link(lang)}<li><a href="{LINKEDIN}" rel="noopener">LinkedIn</a></li><li><a href="{UPWORK}" rel="noopener">Upwork</a></li></ul>
   </div>
 </footer>
 </body>
@@ -336,9 +365,14 @@ def privacy(lang):
              "<h2>No cookies</h2><p>This site does not set any cookies and does not use advertising or tracking cookies.</p>",
              "<h2>Preferences stored in your browser</h2><p>If you switch the theme or the language, your choice is saved in your browser's local storage (the keys <code>theme</code> and <code>lang</code>) so the site remembers it. It never leaves your device. You can remove it by clearing your browser's site data.</p>",
              "<h2>Hosting</h2><p>The site is hosted by GitHub Pages (GitHub, Inc., USA). Like any web host, GitHub processes technical data such as your IP address to deliver the pages and keep the service secure. See the <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" rel=\"noopener\">GitHub privacy statement</a>.</p>"]
-        if CF_ANALYTICS_TOKEN:
+        if GA4_ID:
+            s[2] = "<h2>Cookies</h2><p>This site sets cookies only if you accept them in the banner. They are used for visit statistics with Google Analytics, never for advertising.</p>"
+            s.append("<h2>Visit statistics (Google Analytics)</h2><p>If you click \"Accept\", I use Google Analytics 4 to count visits and see which pages are read, from which country and on which type of device. Google Analytics sets the cookies <code>_ga</code> and <code>_ga_*</code>, which last up to 2 years. Google does not record or store IP addresses in Google Analytics 4. Data is kept for 14 months, then deleted.</p>"
+                     "<p>The data is processed by Google (Google Ireland Limited for visitors in Europe, Google LLC in the USA). Google LLC is certified under the EU-US Data Privacy Framework. See <a href=\"https://policies.google.com/privacy\" rel=\"noopener\">Google's privacy policy</a> and <a href=\"https://policies.google.com/technologies/partner-sites\" rel=\"noopener\">how Google uses data from sites that use its services</a>.</p>"
+                     "<p>If you click \"Decline\", or don't answer, no Google script is loaded. You can change your choice at any time with the \"Cookie settings\" link at the bottom of every page. Your choice is remembered in your browser's local storage (key <code>consent</code>) for 13 months.</p>")
+        elif CF_ANALYTICS_TOKEN:
             s.append("<h2>Visit statistics</h2><p>I use Cloudflare Web Analytics to count visits and see which pages are read. It does not use cookies, does not store your IP address and does not follow you across other websites. Data is processed by Cloudflare, Inc. (USA). See the <a href=\"https://www.cloudflare.com/privacypolicy/\" rel=\"noopener\">Cloudflare privacy policy</a>.</p>")
-        else:
+        elif not GA4_ID:
             s.append("<h2>Visit statistics</h2><p>No analytics are currently active on this site.</p>")
         if WEB3FORMS_KEY:
             s.append("<h2>Contact form</h2><p>When you use the contact form, your name, email address and message are sent through Web3Forms (a form delivery service) to my mailbox. I use them only to reply to you, I don't share them, and I delete them within 24 months of our last exchange. See the <a href=\"https://web3forms.com/privacy\" rel=\"noopener\">Web3Forms privacy policy</a>.</p>")
@@ -352,9 +386,14 @@ def privacy(lang):
              "<h2>Aucun cookie</h2><p>Ce site ne dépose aucun cookie et n'utilise aucun cookie publicitaire ou de suivi.</p>",
              "<h2>Préférences enregistrées dans votre navigateur</h2><p>Si vous changez le thème ou la langue, votre choix est enregistré dans le stockage local de votre navigateur (clés <code>theme</code> et <code>lang</code>) pour que le site s'en souvienne. Il ne quitte jamais votre appareil. Vous pouvez le supprimer en effaçant les données du site dans votre navigateur.</p>",
              "<h2>Hébergement</h2><p>Le site est hébergé par GitHub Pages (GitHub, Inc., États-Unis). Comme tout hébergeur, GitHub traite des données techniques, comme votre adresse IP, pour servir les pages et sécuriser le service. Voir la <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" rel=\"noopener\" hreflang=\"en\">déclaration de confidentialité de GitHub</a> (en anglais).</p>"]
-        if CF_ANALYTICS_TOKEN:
+        if GA4_ID:
+            s[2] = "<h2>Cookies</h2><p>Ce site ne dépose des cookies que si vous les acceptez dans le bandeau. Ils servent aux statistiques de visite avec Google Analytics, jamais à la publicité.</p>"
+            s.append("<h2>Statistiques de visite (Google Analytics)</h2><p>Si vous cliquez sur « Accepter », j'utilise Google Analytics 4 pour compter les visites et voir quelles pages sont lues, depuis quel pays et sur quel type d'appareil. Google Analytics dépose les cookies <code>_ga</code> et <code>_ga_*</code>, valables jusqu'à 2 ans. Google n'enregistre ni ne conserve les adresses IP dans Google Analytics 4. Les données sont conservées 14 mois, puis supprimées.</p>"
+                     "<p>Les données sont traitées par Google (Google Ireland Limited pour les visiteurs en Europe, Google LLC aux États-Unis). Google LLC est certifiée au titre du cadre de protection des données UE-États-Unis (Data Privacy Framework). Voir les <a href=\"https://policies.google.com/privacy?hl=fr\" rel=\"noopener\">règles de confidentialité de Google</a> et la page <a href=\"https://policies.google.com/technologies/partner-sites?hl=fr\" rel=\"noopener\">sur l'utilisation des données par Google sur les sites partenaires</a>.</p>"
+                     "<p>Si vous cliquez sur « Refuser », ou si vous ne répondez pas, aucun script Google n'est chargé. Vous pouvez changer d'avis à tout moment avec le lien « Gestion des cookies » en bas de chaque page. Votre choix est mémorisé dans le stockage local de votre navigateur (clé <code>consent</code>) pendant 13 mois.</p>")
+        elif CF_ANALYTICS_TOKEN:
             s.append("<h2>Statistiques de visite</h2><p>J'utilise Cloudflare Web Analytics pour compter les visites et voir quelles pages sont lues. Ce service n'utilise pas de cookies, ne conserve pas votre adresse IP et ne vous suit pas sur d'autres sites. Les données sont traitées par Cloudflare, Inc. (États-Unis). Voir la <a href=\"https://www.cloudflare.com/fr-fr/privacypolicy/\" rel=\"noopener\">politique de confidentialité de Cloudflare</a>.</p>")
-        else:
+        elif not GA4_ID:
             s.append("<h2>Statistiques de visite</h2><p>Aucun outil de statistiques n'est actif sur ce site pour le moment.</p>")
         if WEB3FORMS_KEY:
             s.append("<h2>Formulaire de contact</h2><p>Quand vous utilisez le formulaire, votre nom, votre adresse e-mail et votre message sont transmis par Web3Forms (un service d'envoi de formulaires) vers ma messagerie. Je les utilise uniquement pour vous répondre, je ne les partage pas, et je les supprime dans les 24 mois suivant notre dernier échange. Voir la <a href=\"https://web3forms.com/privacy\" rel=\"noopener\" hreflang=\"en\">politique de confidentialité de Web3Forms</a> (en anglais).</p>")
