@@ -320,7 +320,9 @@ def project(lang, i):
                        [T(lang, "The Shuffle workflow behind this pipeline: the Wazuh webhook comes in, a Shuffle Tools step prepares it, and TheHive gets the alert.",
                               "Le workflow Shuffle derrière cette chaîne : le webhook Wazuh arrive, une étape Shuffle Tools le prépare, et TheHive reçoit l'alerte."),
                         T(lang, "Each branch adds one type of observable only when the alert contains it: source IP, target email, RDP or AD source IP, SHA256 hash, host name.",
-                              "Chaque branche ajoute un type d'observable seulement si l'alerte le contient : IP source, e-mail ciblé, IP source RDP ou AD, empreinte SHA256, nom de machine.")])
+                              "Chaque branche ajoute un type d'observable seulement si l'alerte le contient : IP source, e-mail ciblé, IP source RDP ou AD, empreinte SHA256, nom de machine."),
+                        T(lang, "The step at the top reads the MITRE ATT&amp;CK technique IDs of the Wazuh rule, asks TheHive which tactic each belongs to, and adds them to the alert as TTPs. That is why every custom rule I write carries a MITRE block.",
+                              "L'étape du haut lit les ID de techniques MITRE ATT&amp;CK de la règle Wazuh, demande à TheHive la tactique de chacune et les ajoute à l'alerte comme TTP. C'est pour ça que chaque règle personnalisée que j'écris porte un bloc MITRE.")])
         extra += figure("/assets/img/wazuh-overview.webp", 1568, 500,
                        T(lang, "Wazuh overview: 52 active and 15 disconnected agents, and the alerts of the last 24 hours by severity",
                             "Vue d'ensemble Wazuh : 52 agents actifs et 15 déconnectés, et les alertes des dernières 24 heures par sévérité"),
