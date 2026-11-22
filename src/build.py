@@ -182,13 +182,14 @@ def case_index(lang, h="h3"):
     cols = T(lang, ("Case", "What", "Where", "Status"), ("Cas", "Quoi", "Où", "Statut"))
     rows = []
     for p in PROJECTS:
+        shots = f'<span class="case__shots">{T(lang, "With screenshots of the Shuffle workflow and the Wazuh dashboards", "Avec captures du workflow Shuffle et des tableaux de bord Wazuh")}</span>' if p["case"] == "CASE-01" else ""
         rows.append(f"""<li class="case">
   <a class="case__link" href="{project_path(p, lang)}">
     <span class="case__id">{p['case']}</span>
-    <span class="case__what"><{h} class="case__title">{p['title'][lang]}</{h}><span class="case__line">{p['card'][lang]}</span></span>
+    <span class="case__what"><{h} class="case__title">{p['title'][lang]}</{h}><span class="case__line">{p['card'][lang]}</span>{shots}</span>
     <span class="case__where">{p['org'][lang]}</span>
     <span class="case__status">{p['status'][lang]}</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">{T(lang, "Open", "Ouvrir")} →</span>
   </a>
 </li>""")
     head = f'<div class="cases__head" aria-hidden="true"><span>{cols[0]}</span><span>{cols[1]}</span><span>{cols[2]}</span><span>{cols[3]}</span></div>'
@@ -210,6 +211,10 @@ def home(lang):
         now = [("Now", "SOC Team Lead at AVEOLYS, since July 2023"), ("Before", "Network and security engineer at Huawei Technologies Madagascar, 2021 to 2023"), ("Speaks", "English, French, Malagasy")]
         work_h, work_p = "Selected work", "Six pieces of work, listed the way my team lists its cases. Client findings stay with the clients."
         shot_h = "Inside CASE-01"
+        shot_more = "Read the full case"
+        flow_alt = "Shuffle workflow Wazuh Alerts: Wazuh webhook, Shuffle Tools step, TheHive alert, MITRE TTP step and five conditional branches that add observables"
+        flow_notes = ["The Shuffle workflow I built: every Wazuh alert at level 10 or above becomes a TheHive alert.",
+                      "One step adds the MITRE ATT&amp;CK techniques as TTPs; five branches add the observables the alert contains."]
         shot_alt = "Wazuh MITRE ATT&CK dashboard: alerts over the last 24 hours, top tactics, attacks by technique, and techniques per agent"
         shot_notes = ["The MITRE ATT&amp;CK view of the SOC I run at AVEOLYS, last 24 hours, taken from the live console.",
                       "Every technique on it comes from a detection rule mapped to ATT&amp;CK.",
@@ -232,6 +237,10 @@ def home(lang):
         now = [("Aujourd'hui", "SOC Team Lead chez AVEOLYS, depuis juillet 2023"), ("Avant", "Ingénieur réseau et sécurité chez Huawei Technologies Madagascar, de 2021 à 2023"), ("Langues", "Français, anglais, malgache")]
         work_h, work_p = "Travaux choisis", "Six réalisations, présentées comme mon équipe présente ses cas. Les constats des clients restent chez les clients."
         shot_h = "Au cœur de CASE-01"
+        shot_more = "Lire le cas complet"
+        flow_alt = "Workflow Shuffle Wazuh Alerts : webhook Wazuh, étape Shuffle Tools, alerte TheHive, étape TTP MITRE et cinq branches conditionnelles qui ajoutent les observables"
+        flow_notes = ["Le workflow Shuffle que j'ai construit : chaque alerte Wazuh de niveau 10 ou plus devient une alerte TheHive.",
+                      "Une étape ajoute les techniques MITRE ATT&amp;CK comme TTP ; cinq branches ajoutent les observables présents dans l'alerte."]
         shot_alt = "Tableau de bord MITRE ATT&CK de Wazuh : alertes des dernières 24 heures, tactiques principales, attaques par technique et techniques par agent"
         shot_notes = ["La vue MITRE ATT&amp;CK du SOC que je dirige chez AVEOLYS, sur les dernières 24 heures, prise dans la console en production.",
                       "Chaque technique affichée vient d'une règle de détection reliée à ATT&amp;CK.",
@@ -267,7 +276,8 @@ def home(lang):
 </section>
 
 <section class="frame block" aria-labelledby="shot-h">
-  <div class="block__head"><h2 id="shot-h">{shot_h}</h2></div>
+  <div class="block__head"><h2 id="shot-h">{shot_h}</h2><p><a href="{project_path(PROJECTS[0], lang)}#screens">{shot_more} <span aria-hidden="true">→</span></a></p></div>
+  {figure('/assets/img/shuffle-workflow.webp', 1048, 806, flow_alt, flow_notes)}
   {figure('/assets/img/wazuh-mitre.webp', 1568, 731, shot_alt, shot_notes)}
 </section>
 
@@ -314,6 +324,7 @@ def project(lang, i):
     facts_html = "".join(f"<div><dt>{x}</dt><dd>{y}</dd></div>" for x, y in facts)
     extra = ""
     if p["case"] == "CASE-01":
+        facts_html += f'<div><dt>{T(lang, "Screenshots", "Captures")}</dt><dd><a href="#screens">{T(lang, "Shuffle and Wazuh, further down", "Shuffle et Wazuh, plus bas")} ↓</a></dd></div>'
         extra = figure("/assets/img/shuffle-workflow.webp", 1048, 806,
                        T(lang, "Shuffle workflow Wazuh Alerts: Wazuh webhook, Shuffle Tools step, TheHive alert, then five conditional branches that add observables",
                             "Workflow Shuffle Wazuh Alerts : webhook Wazuh, étape Shuffle Tools, alerte TheHive, puis cinq branches conditionnelles qui ajoutent les observables"),
@@ -333,9 +344,10 @@ def project(lang, i):
         extra += figure("/assets/img/wazuh-mitre.webp", 1568, 731,
                         T(lang, "Wazuh MITRE ATT&CK dashboard with host names blurred", "Tableau de bord MITRE ATT&CK de Wazuh, noms de machines floutés"),
                         [T(lang, "The same SOC seen through MITRE ATT&amp;CK. Client host names are blurred.", "Le même SOC vu par MITRE ATT&amp;CK. Les noms des machines clientes sont floutés.")])
+    screens = f'<section id="screens" class="screens"><h2>{T(lang, "Screenshots", "Captures")}</h2>{extra}</section>' if extra else ""
     body = page_head(lang, p["title"][lang], p["summary"][lang], cr, case=p["case"]) + f"""<div class="frame doc">
 <dl class="doc__facts margin">{facts_html}</dl>
-<article class="doc__body prose">{p['body'][lang]}{extra}</article>
+<article class="doc__body prose">{p['body'][lang]}{screens}</article>
 </div>
 <nav class="frame pager" aria-label="{T(lang, 'Other cases', 'Autres cas')}">
 <a href="{project_path(prev_p, lang)}"><span class="sr-only">{ui['prev']} : </span><span class="case-tag">{prev_p['case']}</span> {prev_p['title'][lang]}</a>

@@ -64,10 +64,10 @@
   <div class="cases"><div class="cases__head" aria-hidden="true"><span>Cas</span><span>Quoi</span><span>Où</span><span>Statut</span></div><ol class="cases__list"><li class="case">
   <a class="case__link" href="/fr/projets/creation-soc/">
     <span class="case__id">CASE-01</span>
-    <span class="case__what"><h3 class="case__title">Créer un SOC à partir de zéro</h3><span class="case__line">SIEM, cas automatisés et renseignement pour plus de 60 postes et serveurs.</span></span>
+    <span class="case__what"><h3 class="case__title">Créer un SOC à partir de zéro</h3><span class="case__line">SIEM, cas automatisés et renseignement pour plus de 60 postes et serveurs.</span><span class="case__shots">Avec captures du workflow Shuffle et des tableaux de bord Wazuh</span></span>
     <span class="case__where">AVEOLYS, Antananarivo</span>
     <span class="case__status">En production</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">Ouvrir →</span>
   </a>
 </li><li class="case">
   <a class="case__link" href="/fr/projets/ingenierie-de-detection/">
@@ -75,7 +75,7 @@
     <span class="case__what"><h3 class="case__title">Ingénierie de détection et réduction du bruit</h3><span class="case__line">Plus de 60 règles Wazuh, et un réglage qui a supprimé des milliers d'alertes par jour.</span></span>
     <span class="case__where">AVEOLYS, Antananarivo</span>
     <span class="case__status">En production</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">Ouvrir →</span>
   </a>
 </li><li class="case">
   <a class="case__link" href="/fr/projets/playbooks-reponse-incident/">
@@ -83,7 +83,7 @@
     <span class="case__what"><h3 class="case__title">Playbooks et runbooks de réponse à incident</h3><span class="case__line">Douze playbooks au format NIST, améliorés après chaque incident.</span></span>
     <span class="case__where">AVEOLYS, Antananarivo</span>
     <span class="case__status">Mis à jour après chaque incident</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">Ouvrir →</span>
   </a>
 </li><li class="case">
   <a class="case__link" href="/fr/projets/audits-active-directory/">
@@ -91,7 +91,7 @@
     <span class="case__what"><h3 class="case__title">Audits et durcissement Active Directory</h3><span class="case__line">La méthode de l'ANSSI : collecter, évaluer, corriger, réévaluer, notamment pour un groupe de santé.</span></span>
     <span class="case__where">Clients d'AVEOLYS, dont un groupe de santé</span>
     <span class="case__status">Cycle d'audit récurrent</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">Ouvrir →</span>
   </a>
 </li><li class="case">
   <a class="case__link" href="/fr/projets/authentification-unique-mfa/">
@@ -99,7 +99,7 @@
     <span class="case__what"><h3 class="case__title">Authentification unique avec MFA</h3><span class="case__line">Un seul identifiant Keycloak avec MFA pour les outils et les applications.</span></span>
     <span class="case__where">AVEOLYS, Antananarivo</span>
     <span class="case__status">En production</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">Ouvrir →</span>
   </a>
 </li><li class="case">
   <a class="case__link" href="/fr/projets/tests-d-intrusion/">
@@ -107,13 +107,14 @@
     <span class="case__what"><h3 class="case__title">Tests d'intrusion et audits de sécurité</h3><span class="case__line">Tests menés pour Odity, Galana GDP et Galana GRT, du périmètre au suivi.</span></span>
     <span class="case__where">Clients d'AVEOLYS, Antananarivo et Toamasina</span>
     <span class="case__status">Livré sur quatre sites</span>
-    <span class="case__go" aria-hidden="true">→</span>
+    <span class="case__go" aria-hidden="true">Ouvrir →</span>
   </a>
 </li></ol></div>
 </section>
 
 <section class="frame block" aria-labelledby="shot-h">
-  <div class="block__head"><h2 id="shot-h">Au cœur de CASE-01</h2></div>
+  <div class="block__head"><h2 id="shot-h">Au cœur de CASE-01</h2><p><a href="/fr/projets/creation-soc/#screens">Lire le cas complet <span aria-hidden="true">→</span></a></p></div>
+  <figure class="shot"><img src="/assets/img/shuffle-workflow.webp" width="1048" height="806" alt="Workflow Shuffle Wazuh Alerts : webhook Wazuh, étape Shuffle Tools, alerte TheHive, étape TTP MITRE et cinq branches conditionnelles qui ajoutent les observables" loading="lazy" decoding="async"><figcaption><ol class="notes"><li>Le workflow Shuffle que j'ai construit : chaque alerte Wazuh de niveau 10 ou plus devient une alerte TheHive.</li><li>Une étape ajoute les techniques MITRE ATT&amp;CK comme TTP ; cinq branches ajoutent les observables présents dans l'alerte.</li></ol></figcaption></figure>
   <figure class="shot"><img src="/assets/img/wazuh-mitre.webp" width="1568" height="731" alt="Tableau de bord MITRE ATT&CK de Wazuh : alertes des dernières 24 heures, tactiques principales, attaques par technique et techniques par agent" loading="lazy" decoding="async"><figcaption><ol class="notes"><li>La vue MITRE ATT&amp;CK du SOC que je dirige chez AVEOLYS, sur les dernières 24 heures, prise dans la console en production.</li><li>Chaque technique affichée vient d'une règle de détection reliée à ATT&amp;CK.</li><li>Les noms des machines clientes et du manager sont floutés.</li></ol></figcaption></figure>
 </section>
 
