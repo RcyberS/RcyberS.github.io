@@ -9,7 +9,9 @@ from content import *         # noqa: F401,F403
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ESBUILD = os.environ.get("ESBUILD", "esbuild")
-ASSET_V = LAST_UPDATED.replace("-", "")
+import hashlib as _h
+ASSET_V = _h.sha1(b"".join(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), f), "rb").read()
+                          for f in ("css/site.css", "js/theme.js", "js/main.js", "js/ga.js"))).hexdigest()[:8]
 
 def url(path):
     return SITE_URL + path
