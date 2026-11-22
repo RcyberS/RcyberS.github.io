@@ -10,7 +10,7 @@ UI = {
         "menu": "Menu",
         "theme": "Dark theme",
         "lang_label": "Language",
-        "title": "Cybersecurity Specialist | Defensive, Offensive & Cloud Security",
+        "title": "Cybersecurity specialist, security operations and incident response",
         "footer_rights": f"© 2026 {NAME}",
         "footer_links": [("privacy", "Privacy policy"), ("legal", "Legal notice")],
         "crumb_home": "Home",
@@ -26,7 +26,7 @@ UI = {
         "menu": "Menu",
         "theme": "Thème sombre",
         "lang_label": "Langue",
-        "title": "Spécialiste en cybersécurité | Sécurité défensive, offensive et cloud",
+        "title": "Spécialiste en cybersécurité, opérations de sécurité et réponse à incident",
         "footer_rights": f"© 2026 {NAME}",
         "footer_links": [("privacy", "Politique de confidentialité"), ("legal", "Mentions légales")],
         "crumb_home": "Accueil",
@@ -49,8 +49,8 @@ PATHS = {
 }
 
 FACTS = {
-    "en": [("5", "years in cybersecurity"), ("62", "endpoints and servers monitored"), ("12", "incident response playbooks written"), ("4", "firewall vendors operated")],
-    "fr": [("5", "ans en cybersécurité"), ("62", "postes et serveurs supervisés"), ("12", "playbooks de réponse à incident rédigés"), ("4", "constructeurs de pare-feu exploités")],
+    "en": [("5", "years in cybersecurity"), ("60+", "endpoints and servers monitored"), ("12", "incident response playbooks written"), ("4", "firewall vendors operated")],
+    "fr": [("5", "ans en cybersécurité"), ("60+", "postes et serveurs supervisés"), ("12", "playbooks de réponse à incident rédigés"), ("4", "constructeurs de pare-feu exploités")],
 }
 
 FEED = {
@@ -75,7 +75,7 @@ EXPERIENCE = {
             "Deployed Keycloak single sign-on with MFA for internal and client applications.",
             "Operate Sophos, Stormshield and Forcepoint firewalls, Suricata IDS/IPS, a WAF and Bitdefender GravityZone."]},
         {"when": "May 2021 – June 2023", "title": "Network &amp; Security Engineer", "org": "Huawei Technologies Madagascar", "items": [
-            "Deployed and administered Huawei USG6700E next-generation firewalls and the HiSec Endpoint and HiSec Insight security platforms.",
+            "Deployed and administered Huawei USG6700E firewalls (NGFW) and the HiSec Endpoint and HiSec Insight security platforms.",
             "Designed and ran MPLS, IPsec VPN, OSPF and BGP networks, with VLAN segmentation, 802.1X access control and VRRP redundancy.",
             "Contributed to identity and access management and to business continuity and disaster recovery plans."]},
         {"when": "June – August 2019", "title": "IT Security Intern", "org": "MICTSL (Madagascar International Container Terminal Services Ltd)", "items": [
@@ -115,18 +115,22 @@ EXPERIENCE = {
 
 SKILLS = {
     "en": [
-        ("Defensive security", "SIEM (Wazuh, ELK, SolarWinds SEM), SOAR (Shuffle, TheHive, Cortex), incident response, threat hunting, threat intelligence (MISP), malware analysis in a sandbox, YARA, EDR (Bitdefender GravityZone)"),
-        ("Offensive security", "Penetration testing, Active Directory attacks (Kerberoasting, Pass-the-Hash), BloodHound, Impacket, Mimikatz, vulnerability scanning (OpenVAS), Internet exposure reviews"),
-        ("Cloud and identity", "Microsoft 365 and Exchange Online monitoring, Keycloak SSO, MFA, OIDC and SAML, Active Directory and Kerberos, AD auditing (ORADAD, PingCastle)"),
-        ("Network security", "Next-generation firewalls (Sophos, Stormshield, Forcepoint, Huawei USG), Suricata IDS/IPS, WAF, IPsec and MPLS VPN, OSPF, BGP, VLAN, 802.1X"),
+        ("Detection and response", "SIEM (Wazuh, ELK, SolarWinds SEM), SOAR (Shuffle, TheHive, Cortex), threat intelligence (MISP), EDR (Bitdefender GravityZone), incident response, threat hunting, malware analysis in a sandbox, YARA"),
+        ("Detection engineering", "Custom rules and decoders, correlation rules, detection use cases, MITRE ATT&amp;CK mapping, alert tuning"),
+        ("Network security", "Firewalls (Sophos, Stormshield, Forcepoint, Huawei USG), Suricata IDS/IPS, WAF, IPsec VPN"),
+        ("Routing and switching", "Cisco, Huawei, HPE Aruba and ProCurve: OSPF, BGP, MPLS, VLAN, 802.1X, VRRP"),
+        ("Identity and Active Directory", "Keycloak SSO, MFA, OIDC and SAML, Active Directory and Kerberos, AD audits (ORADAD, PingCastle, BloodHound)"),
+        ("Testing", "Penetration tests, Kerberoasting and Pass-the-Hash testing, vulnerability scanning (OpenVAS), Internet exposure reviews"),
         ("Frameworks", "MITRE ATT&amp;CK, NIST CSF, NIST SP 800-61, ISO 27001, GDPR"),
         ("Languages", "English and French, fluent. Malagasy, native."),
     ],
     "fr": [
-        ("Sécurité défensive", "SIEM (Wazuh, ELK, SolarWinds SEM), SOAR (Shuffle, TheHive, Cortex), réponse à incident, threat hunting, renseignement sur la menace (MISP), analyse de malware en sandbox, YARA, EDR (Bitdefender GravityZone)"),
-        ("Sécurité offensive", "Tests d'intrusion, attaques Active Directory (Kerberoasting, Pass-the-Hash), BloodHound, Impacket, Mimikatz, scan de vulnérabilités (OpenVAS), revue de l'exposition Internet"),
-        ("Cloud et identité", "Supervision de Microsoft 365 et Exchange Online, SSO Keycloak, MFA, OIDC et SAML, Active Directory et Kerberos, audit AD (ORADAD, PingCastle)"),
-        ("Sécurité réseau", "Pare-feu nouvelle génération (Sophos, Stormshield, Forcepoint, Huawei USG), IDS/IPS Suricata, WAF, VPN IPsec et MPLS, OSPF, BGP, VLAN, 802.1X"),
+        ("Détection et réponse", "SIEM (Wazuh, ELK, SolarWinds SEM), SOAR (Shuffle, TheHive, Cortex), renseignement sur la menace (MISP), EDR (Bitdefender GravityZone), réponse à incident, threat hunting, analyse de malware en sandbox, YARA"),
+        ("Ingénierie de détection", "Règles et décodeurs sur mesure, règles de corrélation, cas d'usage de détection, mapping MITRE ATT&amp;CK, réglage des alertes"),
+        ("Sécurité réseau", "Pare-feu (Sophos, Stormshield, Forcepoint, Huawei USG), IDS/IPS Suricata, WAF, VPN IPsec"),
+        ("Routage et commutation", "Cisco, Huawei, HPE Aruba et ProCurve : OSPF, BGP, MPLS, VLAN, 802.1X, VRRP"),
+        ("Identité et Active Directory", "SSO Keycloak, MFA, OIDC et SAML, Active Directory et Kerberos, audits AD (ORADAD, PingCastle, BloodHound)"),
+        ("Tests", "Tests d'intrusion, tests Kerberoasting et Pass-the-Hash, scan de vulnérabilités (OpenVAS), revue de l'exposition Internet"),
         ("Référentiels", "MITRE ATT&amp;CK, NIST CSF, NIST SP 800-61, ISO 27001, RGPD"),
         ("Langues", "Anglais et français courants. Malgache, langue maternelle."),
     ],
@@ -145,12 +149,16 @@ def flow(items):
         out.append(f"<li>{x}</li>")
     return '<div class="diagram"><ol class="flow">' + "".join(out) + "</ol></div>"
 
-PROJECTS = [
+PROJECTS_RAW = [
   {
     "slug": {"en": "building-a-soc", "fr": "creation-soc"},
+    "case": "CASE-01",
+    "status": {"en": "In production", "fr": "En production"},
+    "flow": {"en": ["Wazuh", "Shuffle", "TheHive", "Cortex + MISP"], "fr": ["Wazuh", "Shuffle", "TheHive", "Cortex + MISP"]},
+    "card": {"en": "SIEM, automated cases and threat intelligence for more than 60 endpoints and servers.", "fr": "SIEM, cas automatisés et renseignement pour plus de 60 postes et serveurs."},
     "title": {"en": "Building a SOC from scratch", "fr": "Créer un SOC à partir de zéro"},
-    "summary": {"en": "A full detection and response platform: SIEM, automated case handling and threat intelligence, now watching 62 endpoints and servers.",
-                "fr": "Une plateforme complète de détection et de réponse : SIEM, gestion automatisée des cas et renseignement sur la menace, qui supervise aujourd'hui 62 postes et serveurs."},
+    "summary": {"en": "A full detection and response platform: SIEM, automated case handling and threat intelligence, now watching more than 60 endpoints and servers.",
+                "fr": "Une plateforme complète de détection et de réponse : SIEM, gestion automatisée des cas et renseignement sur la menace, qui supervise aujourd'hui plus de 60 postes et serveurs."},
     "meta": {"en": "AVEOLYS · 2023 – present", "fr": "AVEOLYS · 2023 – aujourd'hui"},
     "role": {"en": "Design, deployment and operation", "fr": "Conception, déploiement et exploitation"},
     "org": {"en": "AVEOLYS, Antananarivo", "fr": "AVEOLYS, Antananarivo"},
@@ -168,7 +176,7 @@ PROJECTS = [
 <li><strong>Cortex</strong> and <strong>MISP</strong> enrich those observables with what is already known about them, before an analyst opens the case.</li>
 </ul>
 <h2>What it covers</h2>
-<p>The platform monitors <strong>62 endpoints and servers</strong>. It also collects logs from the Zimbra mail server, the web application firewall, Microsoft 365 and Active Directory, with Sysmon on Windows machines.</p>
+<p>The platform monitors <strong>more than 60 endpoints and servers</strong>. It also collects logs from the Zimbra mail server, the web application firewall, Microsoft 365 and Active Directory, with Sysmon on Windows machines.</p>
 <h2>Result</h2>
 <p>One chain from a raw log to a qualified case. Analysts start their work with the context already attached, instead of searching for it by hand.</p>""",
       "fr": """<h2>Point de départ</h2>
@@ -182,13 +190,17 @@ PROJECTS = [
 <li><strong>Cortex</strong> et <strong>MISP</strong> enrichissent ces observables avec ce que l'on sait déjà d'eux, avant qu'un analyste ouvre le cas.</li>
 </ul>
 <h2>Périmètre</h2>
-<p>La plateforme supervise <strong>62 postes et serveurs</strong>. Elle collecte aussi les journaux du serveur de messagerie Zimbra, du pare-feu applicatif (WAF), de Microsoft 365 et d'Active Directory, avec Sysmon sur les machines Windows.</p>
+<p>La plateforme supervise <strong>plus de 60 postes et serveurs</strong>. Elle collecte aussi les journaux du serveur de messagerie Zimbra, du pare-feu applicatif (WAF), de Microsoft 365 et d'Active Directory, avec Sysmon sur les machines Windows.</p>
 <h2>Résultat</h2>
 <p>Une seule chaîne, du journal brut au cas qualifié. Les analystes commencent leur travail avec le contexte déjà rattaché, au lieu de le chercher à la main.</p>""",
     },
   },
   {
     "slug": {"en": "detection-engineering", "fr": "ingenierie-de-detection"},
+    "case": "CASE-02",
+    "status": {"en": "In production", "fr": "En production"},
+    "flow": {"en": ["Logs", "Decoder", "Rule", "MITRE ATT&amp;CK"], "fr": ["Journaux", "Décodeur", "Règle", "MITRE ATT&amp;CK"]},
+    "card": {"en": "More than 60 Wazuh rules, and one change that removed thousands of alerts a day.", "fr": "Plus de 60 règles Wazuh, et un réglage qui a supprimé des milliers d'alertes par jour."},
     "title": {"en": "Detection engineering and alert noise reduction", "fr": "Ingénierie de détection et réduction du bruit"},
     "summary": {"en": "More than 60 custom Wazuh rules for mail, WAF, Microsoft 365 and Active Directory, and the tuning that removed thousands of useless alerts a day.",
                 "fr": "Plus de 60 règles Wazuh sur mesure pour la messagerie, le WAF, Microsoft 365 et Active Directory, et le réglage qui a supprimé des milliers d'alertes inutiles par jour."},
@@ -232,6 +244,10 @@ PROJECTS = [
   },
   {
     "slug": {"en": "penetration-tests", "fr": "tests-d-intrusion"},
+    "case": "CASE-06",
+    "status": {"en": "Delivered to four sites", "fr": "Livré sur quatre sites"},
+    "flow": {"en": ["Scope", "Discovery", "Testing", "Report"], "fr": ["Périmètre", "Découverte", "Tests", "Rapport"]},
+    "card": {"en": "Tests I led for Odity, Galana GDP and Galana GRT, from scope to follow-up.", "fr": "Tests menés pour Odity, Galana GDP et Galana GRT, du périmètre au suivi."},
     "title": {"en": "Penetration tests and security audits", "fr": "Tests d'intrusion et audits de sécurité"},
     "summary": {"en": "Security tests I led from start to finish for AVEOLYS clients in Antananarivo and Toamasina: Odity, Galana GDP and Galana GRT.",
                 "fr": "Tests de sécurité que j'ai menés du début à la fin pour des clients d'AVEOLYS à Antananarivo et Toamasina : Odity, Galana GDP et Galana GRT."},
@@ -281,6 +297,10 @@ PROJECTS = [
   },
   {
     "slug": {"en": "active-directory-audits", "fr": "audits-active-directory"},
+    "case": "CASE-04",
+    "status": {"en": "Recurring audit cycle", "fr": "Cycle d'audit récurrent"},
+    "flow": {"en": ["Collect", "Score", "Fix", "Re-scan"], "fr": ["Collecter", "Évaluer", "Corriger", "Réévaluer"]},
+    "card": {"en": "The ANSSI method: collect, score, fix and scan again, including for a healthcare group.", "fr": "La méthode de l'ANSSI : collecter, évaluer, corriger, réévaluer, notamment pour un groupe de santé."},
     "title": {"en": "Active Directory audits and hardening", "fr": "Audits et durcissement Active Directory"},
     "summary": {"en": "A repeatable audit cycle based on the ANSSI method: collect, score, fix, re-scan, including for a healthcare group.",
                 "fr": "Un cycle d'audit reproductible selon la méthode de l'ANSSI : collecter, évaluer, corriger, réévaluer, notamment pour un groupe de santé."},
@@ -320,6 +340,10 @@ PROJECTS = [
   },
   {
     "slug": {"en": "incident-response-playbooks", "fr": "playbooks-reponse-incident"},
+    "case": "CASE-03",
+    "status": {"en": "Updated after each incident", "fr": "Mis à jour après chaque incident"},
+    "flow": {"en": ["Detect", "Contain", "Recover", "Review"], "fr": ["Détecter", "Confiner", "Rétablir", "Analyser"]},
+    "card": {"en": "Twelve playbooks in the NIST format, improved after every incident.", "fr": "Douze playbooks au format NIST, améliorés après chaque incident."},
     "title": {"en": "Incident response playbooks and runbooks", "fr": "Playbooks et runbooks de réponse à incident"},
     "summary": {"en": "Twelve playbooks in the NIST SP 800-61 format, tied to the detection rules and improved after every incident.",
                 "fr": "Douze playbooks au format NIST SP 800-61, reliés aux règles de détection et améliorés après chaque incident."},
@@ -383,6 +407,10 @@ PROJECTS = [
   },
   {
     "slug": {"en": "single-sign-on-mfa", "fr": "authentification-unique-mfa"},
+    "case": "CASE-05",
+    "status": {"en": "In production", "fr": "En production"},
+    "flow": {"en": ["Active Directory", "Keycloak + MFA", "Apps"], "fr": ["Active Directory", "Keycloak + MFA", "Applications"]},
+    "card": {"en": "One Keycloak login with MFA for the security tools and business apps.", "fr": "Un seul identifiant Keycloak avec MFA pour les outils et les applications."},
     "title": {"en": "Single sign-on with MFA", "fr": "Authentification unique avec MFA"},
     "summary": {"en": "One Keycloak login with one-time-password MFA, backed by Active Directory, for the security tools and business applications.",
                 "fr": "Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier."},
@@ -420,12 +448,12 @@ PROJECTS = [
 
 PAGES = {
   "home": {
-    "en": {"title": f"{NAME} | Cybersecurity Specialist", "desc": "Cybersecurity specialist in Madagascar: SOC build and operation, incident response, penetration tests and Active Directory audits. Open to remote work."},
-    "fr": {"title": f"{NAME} | Spécialiste en cybersécurité", "desc": "Spécialiste en cybersécurité à Madagascar : création et exploitation de SOC, réponse à incident, tests d'intrusion et audits Active Directory. Ouvert au travail à distance."},
+    "en": {"title": f"{NAME}, cybersecurity specialist in Antananarivo", "desc": "Cybersecurity specialist focused on security operations and incident response: SOC build and operation, detection engineering, IR playbooks and Active Directory audits."},
+    "fr": {"title": f"{NAME}, spécialiste en cybersécurité à Antananarivo", "desc": "Spécialiste en cybersécurité, opérations de sécurité et réponse à incident : création et exploitation de SOC, ingénierie de détection, playbooks IR et audits Active Directory."},
   },
   "projects": {
-    "en": {"title": f"Projects | {NAME}", "desc": "Case studies: building a SOC, detection engineering, penetration tests, Active Directory audits, incident response playbooks and single sign-on.", "h1": "Projects", "lead": "Six pieces of work, each with what I did and the tools I used. Client findings are never published."},
-    "fr": {"title": f"Projets | {NAME}", "desc": "Études de cas : création d'un SOC, ingénierie de détection, tests d'intrusion, audits Active Directory, playbooks de réponse à incident et authentification unique.", "h1": "Projets", "lead": "Six réalisations, chacune avec ce que j'ai fait et les outils utilisés. Les constats des clients ne sont jamais publiés."},
+    "en": {"title": f"Work | {NAME}", "desc": "Case studies: building a SOC, detection engineering, penetration tests, Active Directory audits, incident response playbooks and single sign-on.", "h1": "Work", "lead": "Six pieces of work, each with what I did and the tools I used. Client findings are never published."},
+    "fr": {"title": f"Travaux | {NAME}", "desc": "Études de cas : création d'un SOC, ingénierie de détection, tests d'intrusion, audits Active Directory, playbooks de réponse à incident et authentification unique.", "h1": "Travaux", "lead": "Six réalisations, chacune avec ce que j'ai fait et les outils utilisés. Les constats des clients ne sont jamais publiés."},
   },
   "about": {
     "en": {"title": f"About | {NAME}", "desc": "Experience at AVEOLYS, Huawei Technologies Madagascar and MICTSL, skills, certifications and education of Stephanio RAZARISON.", "h1": "About me",
@@ -448,3 +476,7 @@ PAGES = {
     "fr": {"title": f"Mentions légales | {NAME}", "desc": "Éditeur et hébergeur de ce site.", "h1": "Mentions légales"},
   },
 }
+
+
+ORDER = ["CASE-01", "CASE-02", "CASE-03", "CASE-04", "CASE-05", "CASE-06"]
+PROJECTS = sorted(PROJECTS_RAW, key=lambda p: ORDER.index(p["case"]))

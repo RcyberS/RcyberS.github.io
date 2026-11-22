@@ -72,50 +72,27 @@ def crumbs_html(lang, items):
     return f'<nav class="crumbs" aria-label="{label}"><ol>{"".join(li)}</ol></nav>'
 
 
-def consent_html(lang):
-    if not GA4_ID:
-        return ""
-    if lang == "en":
-        t, d, acc, dec, more = ("Cookies for visit statistics",
-            "With your permission, I use Google Analytics to count visits and see which pages are read. It sets cookies. If you decline, nothing is loaded.",
-            "Accept", "Decline", "Privacy policy")
-    else:
-        t, d, acc, dec, more = ("Cookies de statistiques",
-            "Avec votre accord, j'utilise Google Analytics pour compter les visites et voir quelles pages sont lues. Ce service dépose des cookies. Si vous refusez, rien n'est chargé.",
-            "Accepter", "Refuser", "Politique de confidentialité")
-    return f"""<section class="consent" id="consent" data-ga="{GA4_ID}" aria-labelledby="consent-title" hidden>
-<div class="consent-text"><h2 id="consent-title">{t}</h2><p>{d} <a href="{PATHS['privacy'][lang]}">{more}</a></p></div>
-<div class="consent-actions"><button class="btn btn-ghost" type="button" data-consent="denied">{dec}</button><button class="btn btn-ghost" type="button" data-consent="granted">{acc}</button></div>
-</section>
-"""
-
-def consent_link(lang):
-    if not GA4_ID:
-        return ""
-    label = "Cookie settings" if lang == "en" else "Gestion des cookies"
-    return f'<li><button class="linkish" type="button" data-consent-open>{label}</button></li>'
-
 # ---------- layout ----------
+SUN = '<svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+MOON = '<svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+
+def T(lang, en, fr):
+    return en if lang == "en" else fr
+
 def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="website", noindex=False):
     ui = UI[lang]
     nav = []
-    for k, label in ui["nav"]:
+    for k, label in [("projects", T(lang, "Work", "Travaux")), ("about", ui["nav"][2][1]), ("contact", ui["nav"][3][1])]:
         cur = ' aria-current="page"' if k == key else ""
         nav.append(f'<li><a href="{PATHS[k][lang]}"{cur}>{label}</a></li>')
     langs = []
     for l in LANGS:
-        name = "EN" if l == "en" else "FR"
-        full = "English" if l == "en" else "Français"
+        name, full = ("EN", "English") if l == "en" else ("FR", "Français")
         if l == lang:
-            langs.append(f'<span aria-current="true" lang="{l}"><span class="sr-only">{full}</span><span aria-hidden="true">{name}</span></span>')
+            langs.append(f'<span aria-current="true" lang="{l}">{name}<span class="sr-only"> ({full})</span></span>')
         else:
-            langs.append(f'<a href="{alt_path}" hreflang="{l}" lang="{l}"><span class="sr-only">{full}</span><span aria-hidden="true">{name}</span></a>')
-    footer_links = "".join(f'<li><a href="{PATHS[k][lang]}">{label}</a></li>' for k, label in ui["footer_links"])
-    lds = ld or []
-    ld_html = "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in lds)
-    analytics = ""
-    if CF_ANALYTICS_TOKEN:
-        analytics = f'<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{{"token": "{CF_ANALYTICS_TOKEN}"}}\'></script>'
+            langs.append(f'<a href="{alt_path}" hreflang="{l}" lang="{l}">{name}<span class="sr-only"> ({full})</span></a>')
+    ld_html = "".join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in (ld or []))
     canonical = url(path)
     hreflang = ""
     if alt_path and key:
@@ -124,8 +101,9 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
                     f'<link rel="alternate" hreflang="x-default" href="{url(en_p)}">')
     og_img = url(f"/assets/img/og-{lang}.png")
     robots = '<meta name="robots" content="noindex">' if noindex else ""
+    ga = f'<script defer src="/assets/js/ga.min.js?v={ASSET_V}" data-id="{GA4_ID}"></script>' if GA4_ID else ""
     return f"""<!DOCTYPE html>
-<html lang="{lang}" data-theme="dark">
+<html lang="{lang}" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -150,38 +128,42 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <meta name="twitter:title" content="{escape(title)}">
 <meta name="twitter:description" content="{escape(desc)}">
 <meta name="twitter:image" content="{og_img}">
-<meta name="theme-color" content="#0A1220">
+<meta name="theme-color" content="#f6f6f3">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<link rel="preload" href="/assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/sora.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/main.min.css?v={ASSET_V}">
+<link rel="preload" href="/assets/fonts/hanken.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/site.min.css?v={ASSET_V}">
 <script src="/assets/js/theme.min.js?v={ASSET_V}"></script>
 <script defer src="/assets/js/main.min.js?v={ASSET_V}"></script>
-{analytics}{ld_html}
+{ga}{ld_html}
 </head>
 <body>
 <a class="skip" href="#main">{ui['skip']}</a>
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="{PATHS['home'][lang]}"><span class="brand-mark" aria-hidden="true">SR</span><span class="brand-name">{NAME}</span><span class="sr-only">, {UI[lang]['nav'][0][1]}</span></a>
-    <div class="tools">
-      <div class="lang" role="group" aria-label="{ui['lang_label']}">{''.join(langs)}</div>
-      <button class="icon-btn theme-toggle" type="button" aria-pressed="true"><span class="sr-only">{ui['theme']}</span>{ICONS['moon']}{ICONS['sun']}</button>
-      <button class="icon-btn menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="sr-only">{ui['menu']}</span>{ICONS['menu']}</button>
+<header class="top">
+  <div class="frame top__row">
+    <a class="top__name" href="{PATHS['home'][lang]}">{NAME}</a>
+    <nav class="top__nav" aria-label="{T(lang, 'Main', 'Principale')}"><ul>{''.join(nav)}</ul></nav>
+    <div class="top__tools">
+      <div class="lang" role="group" aria-label="{ui['lang_label']}">{'<span class="lang__sep" aria-hidden="true">/</span>'.join(langs)}</div>
+      <button class="theme" type="button" aria-pressed="false"><span class="sr-only">{T(lang, 'Dark theme', 'Thème sombre')}</span>{MOON}{SUN}</button>
     </div>
-    <nav class="nav" id="site-nav" aria-label="{'Main' if lang == 'en' else 'Principale'}"><ul>{''.join(nav)}</ul></nav>
   </div>
 </header>
 <main id="main" tabindex="-1">
 {body}
 </main>
-{consent_html(lang)}<footer class="site-footer">
-  <div class="wrap">
-    <p>{ui['footer_rights']}</p>
-    <ul>{footer_links}{consent_link(lang)}<li><a href="{LINKEDIN}" rel="noopener">LinkedIn</a></li><li><a href="{UPWORK}" rel="noopener">Upwork</a></li></ul>
+<footer class="foot">
+  <div class="frame foot__row">
+    <p>{NAME}, {CITY}</p>
+    <ul>
+      <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
+      <li><a href="{LINKEDIN}" rel="noopener">LinkedIn</a></li>
+      <li><a href="{UPWORK}" rel="noopener">Upwork</a></li>
+      <li><a href="{PATHS['privacy'][lang]}">{ui['footer_links'][0][1]}</a></li>
+      <li><a href="{PATHS['legal'][lang]}">{ui['footer_links'][1][1]}</a></li>
+    </ul>
   </div>
 </footer>
 </body>
@@ -189,85 +171,135 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 """
 
 # ---------- shared blocks ----------
-def chips(tools):
-    return '<ul class="chips">' + "".join(f"<li>{t}</li>" for t in tools) + "</ul>"
+def page_head(lang, h1, lead, crumbs, case=None):
+    lead_html = f'<p class="lede">{lead}</p>' if lead else ""
+    tag = f'<p class="case-tag">{case}</p>' if case else ""
+    return (f'<section class="frame head" aria-labelledby="page-h">{crumbs_html(lang, crumbs)}{tag}'
+            f'<h1 id="page-h">{h1}</h1>{lead_html}</section>')
 
-def project_cards(lang, projects, h="h3"):
-    out = []
-    for p in projects:
-        out.append(f"""<article class="card">
-  <p class="meta">{p['meta'][lang]}</p>
-  <{h}><a href="{project_path(p, lang)}">{p['title'][lang]}</a></{h}>
-  <p>{p['summary'][lang]}</p>
-  {chips(p['tools'][:4])}
-</article>""")
-    return '<div class="grid">' + "".join(out) + "</div>"
+def case_index(lang, h="h3"):
+    """The recurring idea: projects listed the way a SOC lists its cases."""
+    cols = T(lang, ("Case", "What", "Where", "Status"), ("Cas", "Quoi", "Où", "Statut"))
+    rows = []
+    for p in PROJECTS:
+        rows.append(f"""<li class="case">
+  <a class="case__link" href="{project_path(p, lang)}">
+    <span class="case__id">{p['case']}</span>
+    <span class="case__what"><{h} class="case__title">{p['title'][lang]}</{h}><span class="case__line">{p['card'][lang]}</span></span>
+    <span class="case__where">{p['org'][lang]}</span>
+    <span class="case__status">{p['status'][lang]}</span>
+    <span class="case__go" aria-hidden="true">→</span>
+  </a>
+</li>""")
+    head = f'<div class="cases__head" aria-hidden="true"><span>{cols[0]}</span><span>{cols[1]}</span><span>{cols[2]}</span><span>{cols[3]}</span></div>'
+    return f'<div class="cases">{head}<ol class="cases__list">{"".join(rows)}</ol></div>'
 
-def cta(lang):
-    if lang == "en":
-        h, p, a1, a2 = "Need help securing your systems?", "SOC setup and tuning, incident response, penetration tests or an Active Directory audit. I work remotely, in English or French.", "Get in touch", "See my experience"
-    else:
-        h, p, a1, a2 = "Besoin de sécuriser vos systèmes ?", "Mise en place ou réglage d'un SOC, réponse à incident, tests d'intrusion ou audit Active Directory. Je travaille à distance, en français ou en anglais.", "Me contacter", "Voir mon parcours"
-    return f"""<section class="section" aria-labelledby="cta-title"><div class="wrap"><div class="cta">
-<h2 id="cta-title">{h}</h2><p>{p}</p>
-<div class="actions"><a class="btn btn-primary" href="{PATHS['contact'][lang]}">{a1}</a><a class="btn btn-ghost" href="{PATHS['about'][lang]}">{a2}</a></div>
-</div></div></section>"""
-
-def feed_li(item):
-    color, title, desc, tag = item
-    return f'<li><i class="dot dot-{color}" aria-hidden="true"></i><span><b>{title}</b><span class="d">{desc}</span></span><span class="tag tag-{color}">{tag}</span></li>'
+def figure(src, w, h, alt, notes):
+    note_html = "".join(f"<li>{n}</li>" for n in notes)
+    return (f'<figure class="shot"><img src="{src}" width="{w}" height="{h}" alt="{alt}" loading="lazy" decoding="async">'
+            f'<figcaption><ol class="notes">{note_html}</ol></figcaption></figure>')
 
 # ---------- pages ----------
 def home(lang):
-    ui, pg = UI[lang], PAGES["home"][lang]
+    pg = PAGES["home"][lang]
     if lang == "en":
-        badge, lead = "Open to remote work", "I build and run security operations: SIEM and automated response, incident handling, penetration tests and Active Directory audits. Five years in the field, currently leading the SOC team at AVEOLYS in Antananarivo, Madagascar."
-        b1, b2, feed_h, feed_s = "View my projects", "Contact me", "Alerts my SOC handles", "Examples"
-        facts_h, proj_h, proj_p = "In numbers", "Selected projects", "Real work for AVEOLYS and its clients. Each case study explains what I did and how."
+        role = "Cybersecurity specialist focused on security operations and incident response."
+        where = "Based in Antananarivo, Madagascar."
+        intro = "I help companies detect attacks sooner and handle every incident the same way: I build their SOC, write the detection rules, and turn the response into playbooks the team can follow."
+        l1, l2 = "View selected work", "Get in touch"
+        now = [("Now", "SOC Team Lead at AVEOLYS, since July 2023"), ("Before", "Network and security engineer at Huawei Technologies Madagascar, 2021 to 2023"), ("Speaks", "English, French, Malagasy")]
+        work_h, work_p = "Selected work", "Six pieces of work, listed the way my team lists its cases. Client findings stay with the clients."
+        shot_h = "Inside CASE-01"
+        shot_alt = "Wazuh MITRE ATT&CK dashboard: alerts over the last 24 hours, top tactics, attacks by technique, and techniques per agent"
+        shot_notes = ["The MITRE ATT&amp;CK view of the SOC I run at AVEOLYS, last 24 hours, taken from the live console.",
+                      "Every technique on it comes from a detection rule mapped to ATT&amp;CK.",
+                      "Client host names and the manager name are blurred."]
+        how_h = "How I work"
+        quote = "My approach is hands-on: I don't just manage security operations; I also design, build, integrate, improve, and operationalize the technologies, intelligence capabilities, and processes behind them."
+        how = [("Build", "The whole stack, from deploying the tools to the detection rules, threat intelligence and monitoring."),
+               ("Lead", "Daily security operations and incident investigations, with the team."),
+               ("Write it down", "IR playbooks, runbooks, detection use cases and response workflows, so the team handles each incident the same way."),
+               ("Align", "Policies and procedures with ISO 27001 and NIST, and detection coverage measured against MITRE ATT&amp;CK.")]
+        xp_h, sk_h = "Experience", "Skills"
+        more = "Full background"
+        contact_h = "Get in touch"
+        contact_p = "For a role, a contract or a review of your security operations. Email is the quickest way to reach me; I reply in English or French."
     else:
-        badge, lead = "Ouvert au travail à distance", "Je construis et j'exploite des opérations de sécurité : SIEM et réponse automatisée, gestion des incidents, tests d'intrusion et audits Active Directory. Cinq ans dans le métier, je dirige aujourd'hui l'équipe SOC d'AVEOLYS à Antananarivo, Madagascar."
-        b1, b2, feed_h, feed_s = "Voir mes projets", "Me contacter", "Alertes traitées par mon SOC", "Exemples"
-        facts_h, proj_h, proj_p = "En chiffres", "Projets choisis", "Du vrai travail pour AVEOLYS et ses clients. Chaque étude de cas explique ce que j'ai fait et comment."
-    feed = FEED[lang]
-    facts = "".join(f'<div class="fact"><b>{n}</b><span>{t}</span></div>' for n, t in FACTS[lang])
-    body = f"""<section class="hero" aria-labelledby="hero-title">
-<canvas id="net" aria-hidden="true"></canvas>
-<div class="wrap">
-  <div>
-    <p class="badge"><i aria-hidden="true"></i>{badge}</p>
-    <h1 id="hero-title">{NAME}</h1>
-    <p class="title">{ui['title']}</p>
-    <p class="lead">{lead}</p>
-    <div class="actions"><a class="btn btn-primary" href="{PATHS['projects'][lang]}">{b1}</a><a class="btn btn-ghost" href="{PATHS['contact'][lang]}">{b2}</a></div>
+        role = "Spécialiste en cybersécurité, opérations de sécurité et réponse à incident."
+        where = "Basé à Antananarivo, Madagascar."
+        intro = "J'aide les entreprises à détecter les attaques plus tôt et à traiter chaque incident de la même façon : je construis leur SOC, j'écris les règles de détection et je transforme la réponse en playbooks que l'équipe peut suivre."
+        l1, l2 = "Voir les travaux choisis", "Me contacter"
+        now = [("Aujourd'hui", "SOC Team Lead chez AVEOLYS, depuis juillet 2023"), ("Avant", "Ingénieur réseau et sécurité chez Huawei Technologies Madagascar, de 2021 à 2023"), ("Langues", "Français, anglais, malgache")]
+        work_h, work_p = "Travaux choisis", "Six réalisations, présentées comme mon équipe présente ses cas. Les constats des clients restent chez les clients."
+        shot_h = "Au cœur de CASE-01"
+        shot_alt = "Tableau de bord MITRE ATT&CK de Wazuh : alertes des dernières 24 heures, tactiques principales, attaques par technique et techniques par agent"
+        shot_notes = ["La vue MITRE ATT&amp;CK du SOC que je dirige chez AVEOLYS, sur les dernières 24 heures, prise dans la console en production.",
+                      "Chaque technique affichée vient d'une règle de détection reliée à ATT&amp;CK.",
+                      "Les noms des machines clientes et du manager sont floutés."]
+        how_h = "Ma façon de travailler"
+        quote = "Mon approche est concrète : je ne me contente pas de gérer les opérations de sécurité, je conçois, je construis, j'intègre, j'améliore et je mets en production les technologies, les capacités de renseignement et les processus qui les font tourner."
+        how = [("Construire", "Toute la pile, du déploiement des outils aux règles de détection, au renseignement sur la menace et à la supervision."),
+               ("Diriger", "Les opérations de sécurité au quotidien et les investigations, avec l'équipe."),
+               ("Écrire", "Playbooks IR, runbooks, cas d'usage de détection et workflows de réponse, pour que l'équipe traite chaque incident de la même façon."),
+               ("Aligner", "Politiques et procédures sur ISO 27001 et le NIST, et couverture de détection mesurée avec MITRE ATT&amp;CK.")]
+        xp_h, sk_h = "Expérience", "Compétences"
+        more = "Parcours complet"
+        contact_h = "Me contacter"
+        contact_p = "Pour un poste, une mission ou une revue de vos opérations de sécurité. L'e-mail est le moyen le plus rapide ; je réponds en français ou en anglais."
+    now_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in now)
+    how_html = "".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in how)
+    xp_html = "".join(f'<li><span class="when">{j["when"]}</span><span class="what"><b>{j["title"]}</b>{j["org"]}</span></li>' for j in EXPERIENCE[lang])
+    sk_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in SKILLS[lang] if a not in ("Languages", "Langues"))
+    body = f"""<section class="frame intro" aria-labelledby="hello">
+  <div class="intro__main">
+    <h1 id="hello">{NAME}</h1>
+    <p class="intro__role">{role}</p>
+    <p class="intro__where">{where}</p>
+    <p class="intro__text">{intro}</p>
+    <p class="intro__links"><a href="#work">{l1} <span aria-hidden="true">→</span></a><a href="{PATHS['contact'][lang]}">{l2} <span aria-hidden="true">→</span></a></p>
   </div>
-  <section class="feed-card" aria-labelledby="feed-title">
-    <h2 id="feed-title">{feed_h} <small>{feed_s}</small></h2>
-    <ul class="feed" id="feed">{''.join(feed_li(x) for x in feed[:4])}</ul>
-    <template id="feed-items">{''.join(feed_li(x) for x in feed[4:] + feed[:4])}</template>
-  </section>
-</div>
+  <dl class="intro__side margin">{now_html}</dl>
 </section>
-<section class="section" aria-labelledby="facts-title"><div class="wrap">
-  <h2 class="sr-only" id="facts-title">{facts_h}</h2>
-  <div class="facts">{facts}</div>
-</div></section>
-<section class="section" aria-labelledby="proj-title"><div class="wrap">
-  <div class="section-head"><h2 id="proj-title">{proj_h}</h2><p>{proj_p}</p></div>
-  {project_cards(lang, PROJECTS[:3])}
-  <div class="actions"><a class="btn btn-ghost" href="{PATHS['projects'][lang]}">{ui['all_projects']}</a></div>
-</div></section>
-{cta(lang)}"""
+
+<section class="frame block" id="work" aria-labelledby="work-h">
+  <div class="block__head"><h2 id="work-h">{work_h}</h2><p>{work_p}</p></div>
+  {case_index(lang)}
+</section>
+
+<section class="frame block" aria-labelledby="shot-h">
+  <div class="block__head"><h2 id="shot-h">{shot_h}</h2></div>
+  {figure('/assets/img/wazuh-mitre.webp', 1568, 731, shot_alt, shot_notes)}
+</section>
+
+<section class="frame block split" aria-labelledby="how-h">
+  <div class="block__head"><h2 id="how-h">{how_h}</h2></div>
+  <div>
+    <p class="quote">{quote}</p>
+    <ol class="how">{how_html}</ol>
+  </div>
+</section>
+
+<section class="frame block split" aria-labelledby="xp-h">
+  <div class="block__head"><h2 id="xp-h">{xp_h}</h2><p><a href="{PATHS['about'][lang]}">{more} <span aria-hidden="true">→</span></a></p></div>
+  <ol class="xp">{xp_html}</ol>
+</section>
+
+<section class="frame block split" aria-labelledby="sk-h">
+  <div class="block__head"><h2 id="sk-h">{sk_h}</h2></div>
+  <dl class="skills">{sk_html}</dl>
+</section>
+
+<section class="frame block split contact-block" aria-labelledby="ct-h">
+  <div class="block__head"><h2 id="ct-h">{contact_h}</h2></div>
+  <div><p>{contact_p}</p><p class="big-link"><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>
+</section>"""
     ld = [person_ld(lang), {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": url(PATHS["home"][lang]), "inLanguage": lang}]
     return layout(lang, "home", PATHS["home"][lang], PATHS["home"][other(lang)], pg["title"], pg["desc"], body, ld)
-
-def page_head(lang, h1, lead, crumbs):
-    lead_html = f"<p>{lead}</p>" if lead else ""
-    return f'<div class="page-head"><div class="wrap">{crumbs_html(lang, crumbs)}<h1>{h1}</h1>{lead_html}</div></div>'
 
 def projects(lang):
     pg = PAGES["projects"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["projects"][lang])]
-    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="section" aria-label="{pg["h1"]}"><div class="wrap">{project_cards(lang, PROJECTS, "h2")}</div></section>' + cta(lang)
+    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block" aria-label="{T(lang, "Case index", "Index des cas")}">{case_index(lang, "h2")}</section>'
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "CollectionPage", "name": pg["h1"], "url": url(PATHS["projects"][lang]), "inLanguage": lang,
           "hasPart": [{"@type": "CreativeWork", "name": p["title"][lang], "url": url(project_path(p, lang))} for p in PROJECTS]}]
     return layout(lang, "projects", PATHS["projects"][lang], PATHS["projects"][other(lang)], pg["title"], pg["desc"], body, ld)
@@ -278,20 +310,29 @@ def project(lang, i):
     cr = [(ui["crumb_home"], PATHS["home"][lang]), (PAGES["projects"][lang]["h1"], PATHS["projects"][lang]), (p["title"][lang], path)]
     a = ui["aside"]
     prev_p, next_p = PROJECTS[i - 1], PROJECTS[(i + 1) % len(PROJECTS)]
-    body = page_head(lang, p["title"][lang], p["summary"][lang], cr) + f"""<section class="section"><div class="wrap detail">
-<div class="body">{p['body'][lang]}
-<nav class="pager" aria-label="{'Projects' if lang == 'en' else 'Projets'}">
-<a href="{project_path(prev_p, lang)}"><span class="sr-only">{ui['prev']}: </span>← {prev_p['title'][lang]}</a>
-<a href="{project_path(next_p, lang)}"><span class="sr-only">{ui['next']}: </span>{next_p['title'][lang]} →</a>
-</nav></div>
-<aside class="aside" aria-label="{'Project summary' if lang == 'en' else 'Résumé du projet'}"><dl>
-<div><dt>{a['role']}</dt><dd>{p['role'][lang]}</dd></div>
-<div><dt>{a['org']}</dt><dd>{p['org'][lang]}</dd></div>
-<div><dt>{a['period']}</dt><dd>{p['period'][lang]}</dd></div>
-<div><dt>{a['tools']}</dt><dd>{chips(p['tools'])}</dd></div>
-</dl></aside>
-</div></section>""" + cta(lang)
-    pg_title = f"{p['title'][lang]} | {NAME}"
+    facts = [(T(lang, "Status", "Statut"), p["status"][lang]), (a["role"], p["role"][lang]), (a["org"], p["org"][lang]), (a["period"], p["period"][lang]), (a["tools"], ", ".join(p["tools"]))]
+    facts_html = "".join(f"<div><dt>{x}</dt><dd>{y}</dd></div>" for x, y in facts)
+    extra = ""
+    if p["case"] == "CASE-01":
+        extra = figure("/assets/img/wazuh-overview.webp", 1568, 500,
+                       T(lang, "Wazuh overview: 52 active and 15 disconnected agents, and the alerts of the last 24 hours by severity",
+                            "Vue d'ensemble Wazuh : 52 agents actifs et 15 déconnectés, et les alertes des dernières 24 heures par sévérité"),
+                       [T(lang, "The Wazuh overview on the day this page was written: agents connected and alerts of the last 24 hours by severity.",
+                              "La vue d'ensemble Wazuh le jour où cette page a été écrite : agents connectés et alertes des dernières 24 heures par sévérité."),
+                        T(lang, "Most alerts sit in the low levels on purpose: only level 10 and above opens a case.",
+                              "La plupart des alertes restent volontairement aux niveaux bas : seul le niveau 10 et plus ouvre un cas.")])
+        extra += figure("/assets/img/wazuh-mitre.webp", 1568, 731,
+                        T(lang, "Wazuh MITRE ATT&CK dashboard with host names blurred", "Tableau de bord MITRE ATT&CK de Wazuh, noms de machines floutés"),
+                        [T(lang, "The same SOC seen through MITRE ATT&amp;CK. Client host names are blurred.", "Le même SOC vu par MITRE ATT&amp;CK. Les noms des machines clientes sont floutés.")])
+    body = page_head(lang, p["title"][lang], p["summary"][lang], cr, case=p["case"]) + f"""<div class="frame doc">
+<dl class="doc__facts margin">{facts_html}</dl>
+<article class="doc__body prose">{p['body'][lang]}{extra}</article>
+</div>
+<nav class="frame pager" aria-label="{T(lang, 'Other cases', 'Autres cas')}">
+<a href="{project_path(prev_p, lang)}"><span class="sr-only">{ui['prev']} : </span><span class="case-tag">{prev_p['case']}</span> {prev_p['title'][lang]}</a>
+<a href="{project_path(next_p, lang)}"><span class="sr-only">{ui['next']} : </span><span class="case-tag">{next_p['case']}</span> {next_p['title'][lang]}</a>
+</nav>"""
+    pg_title = f"{p['case']} {p['title'][lang]} | {NAME}"
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "CreativeWork", "name": p["title"][lang], "description": p["summary"][lang],
           "url": url(path), "inLanguage": lang, "author": {"@id": SITE_URL + "/#person"}, "keywords": ", ".join(t.replace("&amp;", "&") for t in p["tools"])}]
     return path, layout(lang, "projects", path, project_path(p, other(lang)), pg_title, p["summary"][lang], body, ld, og_type="article")
@@ -299,59 +340,29 @@ def project(lang, i):
 def about(lang):
     pg = PAGES["about"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["about"][lang])]
-    xp = "".join(f"""<li><p class="when">{j['when']}</p><h3>{j['title']}</h3><p class="org">{j['org']}</p>
-<ul class="list">{''.join(f'<li>{x}</li>' for x in j['items'])}</ul></li>""" for j in EXPERIENCE[lang])
-    skills = "".join(f'<div class="panel"><h3>{h}</h3><p>{t}</p></div>' for h, t in SKILLS[lang])
-    certs = "".join(f"<li><b>{n}</b><span>{d}</span></li>" for n, d in CERTS[lang])
-    h_xp, h_sk, h_ce = ("Experience", "Skills", "Certifications and education") if lang == "en" else ("Expérience", "Compétences", "Certifications et formation")
+    xp = "".join(f"""<li class="job"><p class="when">{j['when']}</p><div><h3>{j['title']}</h3><p class="org">{j['org']}</p>
+<ul>{''.join(f'<li>{x}</li>' for x in j['items'])}</ul></div></li>""" for j in EXPERIENCE[lang])
+    skills = "".join(f"<div><dt>{h}</dt><dd>{t}</dd></div>" for h, t in SKILLS[lang])
+    certs = "".join(f"<div><dt>{n}</dt><dd>{d}</dd></div>" for n, d in CERTS[lang])
+    h_xp, h_sk, h_ce = T(lang, ("Experience", "Skills and tools", "Certifications and education"), ("Expérience", "Compétences et outils", "Certifications et formation"))
     body = page_head(lang, pg["h1"], pg["lead"], cr) + f"""
-<section class="section" aria-labelledby="xp"><div class="wrap"><div class="section-head"><h2 id="xp">{h_xp}</h2></div><ol class="timeline">{xp}</ol></div></section>
-<section class="section" aria-labelledby="sk"><div class="wrap"><div class="section-head"><h2 id="sk">{h_sk}</h2></div><div class="cols">{skills}</div></div></section>
-<section class="section" aria-labelledby="ce"><div class="wrap"><div class="section-head"><h2 id="ce">{h_ce}</h2></div><ul class="certs">{certs}</ul></div></section>
-""" + cta(lang)
+<section class="frame block split" aria-labelledby="xp"><div class="block__head"><h2 id="xp">{h_xp}</h2></div><ol class="jobs">{xp}</ol></section>
+<section class="frame block split" aria-labelledby="sk"><div class="block__head"><h2 id="sk">{h_sk}</h2></div><dl class="skills">{skills}</dl></section>
+<section class="frame block split" aria-labelledby="ce"><div class="block__head"><h2 id="ce">{h_ce}</h2></div><dl class="skills">{certs}</dl></section>
+"""
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "ProfilePage", "url": url(PATHS["about"][lang]), "inLanguage": lang, "mainEntity": person_ld(lang)}]
     return layout(lang, "about", PATHS["about"][lang], PATHS["about"][other(lang)], pg["title"], pg["desc"], body, ld, og_type="profile")
 
 def contact(lang):
     pg = PAGES["contact"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["contact"][lang])]
-    if lang == "en":
-        L = dict(email="Email", li="LinkedIn", up="Upwork", where="Location", loc=f"{CITY}, {COUNTRY} (UTC+3)", form_h="Send a message",
-                 name="Your name", mail="Your email", msg="Your message", msg_hint="At least 20 characters.", send="Send message",
-                 req="This field is required.", bad="Enter a valid email address, for example name@company.com.", short="Your message is too short: write at least 20 characters.",
-                 sending="Sending…", sent="Thank you, your message has been sent. I'll reply by email.", failed="The message could not be sent. Please email me directly at " + EMAIL + ".",
-                 note=f'Your name, email and message are only used to reply to you. They are delivered by Web3Forms and kept in my mailbox. See the <a href="{PATHS["privacy"][lang]}">privacy policy</a>.',
-                 noform="There is no contact form on this site: your message goes straight to my mailbox and no third party stores it.")
-    else:
-        L = dict(email="E-mail", li="LinkedIn", up="Upwork", where="Localisation", loc=f"{CITY}, {COUNTRY} (UTC+3)", form_h="Envoyer un message",
-                 name="Votre nom", mail="Votre e-mail", msg="Votre message", msg_hint="20 caractères minimum.", send="Envoyer le message",
-                 req="Ce champ est obligatoire.", bad="Saisissez une adresse e-mail valide, par exemple nom@entreprise.com.", short="Votre message est trop court : écrivez au moins 20 caractères.",
-                 sending="Envoi en cours…", sent="Merci, votre message a bien été envoyé. Je vous répondrai par e-mail.", failed="Le message n'a pas pu être envoyé. Écrivez-moi directement à " + EMAIL + ".",
-                 note=f'Votre nom, votre e-mail et votre message servent uniquement à vous répondre. Ils sont transmis par Web3Forms et conservés dans ma messagerie. Voir la <a href="{PATHS["privacy"][lang]}">politique de confidentialité</a>.',
-                 noform="Ce site n'a pas de formulaire de contact : votre message arrive directement dans ma messagerie et aucun tiers ne le conserve.")
-    links = f"""<ul class="links-list">
-<li><span>{L['email']}</span><a href="mailto:{EMAIL}">{EMAIL}</a></li>
-<li><span>{L['li']}</span><a href="{LINKEDIN}" rel="noopener">linkedin.com/in/razarison-romeo-bienvenu-stephanio</a></li>
-<li><span>{L['up']}</span><a href="{UPWORK}" rel="noopener">{'Upwork profile' if lang == 'en' else 'Profil Upwork'}</a></li>
-<li><span>{L['where']}</span>{L['loc']}</li>
-</ul>"""
-    if WEB3FORMS_KEY:
-        right = f"""<form class="contact" action="https://api.web3forms.com/submit" method="post" novalidate aria-labelledby="form-title"
- data-required="{L['req']}" data-email="{L['bad']}" data-short="{L['short']}" data-sending="{L['sending']}" data-sent="{L['sent']}" data-failed="{escape(L['failed'])}">
-<h2 id="form-title">{L['form_h']}</h2>
-<input type="hidden" name="access_key" value="{WEB3FORMS_KEY}">
-<input type="hidden" name="subject" value="Portfolio contact">
-<input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-<div class="field"><label for="name">{L['name']}</label><input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error"><p class="error" id="name-error" aria-live="polite"></p></div>
-<div class="field"><label for="email">{L['mail']}</label><input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error"><p class="error" id="email-error" aria-live="polite"></p></div>
-<div class="field"><label for="message">{L['msg']}</label><p class="hint" id="message-hint">{L['msg_hint']}</p><textarea id="message" name="message" required minlength="20" aria-describedby="message-hint message-error"></textarea><p class="error" id="message-error" aria-live="polite"></p></div>
-<button class="btn btn-primary" type="submit">{L['send']}</button>
-<p class="form-status" role="status" aria-live="polite"></p>
-<p class="privacy-note">{L['note']}</p>
-</form>"""
-    else:
-        right = f'<div class="panel"><p>{L["noform"]}</p><div class="actions"><a class="btn btn-primary" href="mailto:{EMAIL}">{L["email"]}: {EMAIL}</a></div></div>'
-    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="section"><div class="wrap contact-grid"><div>{links}</div><div>{right}</div></div></section>'
+    rows = [(T(lang, "Email", "E-mail"), f'<a href="mailto:{EMAIL}">{EMAIL}</a>'),
+            ("LinkedIn", f'<a href="{LINKEDIN}" rel="noopener">razarison-romeo-bienvenu-stephanio</a>'),
+            ("Upwork", f'<a href="{UPWORK}" rel="noopener">{T(lang, "Upwork profile", "Profil Upwork")}</a>'),
+            (T(lang, "Location", "Localisation"), f"{CITY}, {COUNTRY}"),
+            (T(lang, "Time zone", "Fuseau horaire"), T(lang, "UTC+3, most of the European working day", "UTC+3, la plupart des heures de bureau européennes"))]
+    dl = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in rows)
+    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block split" aria-label="{T(lang, "Contact details", "Coordonnées")}"><div></div><dl class="skills contact-list">{dl}</dl></section>'
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "ContactPage", "url": url(PATHS["contact"][lang]), "inLanguage": lang, "mainEntity": {"@id": SITE_URL + "/#person"}}]
     return layout(lang, "contact", PATHS["contact"][lang], PATHS["contact"][other(lang)], pg["title"], pg["desc"], body, ld)
 
@@ -366,10 +377,10 @@ def privacy(lang):
              "<h2>Preferences stored in your browser</h2><p>If you switch the theme or the language, your choice is saved in your browser's local storage (the keys <code>theme</code> and <code>lang</code>) so the site remembers it. It never leaves your device. You can remove it by clearing your browser's site data.</p>",
              "<h2>Hosting</h2><p>The site is hosted by GitHub Pages (GitHub, Inc., USA). Like any web host, GitHub processes technical data such as your IP address to deliver the pages and keep the service secure. See the <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" rel=\"noopener\">GitHub privacy statement</a>.</p>"]
         if GA4_ID:
-            s[2] = "<h2>Cookies</h2><p>This site sets cookies only if you accept them in the banner. They are used for visit statistics with Google Analytics, never for advertising.</p>"
-            s.append("<h2>Visit statistics (Google Analytics)</h2><p>If you click \"Accept\", I use Google Analytics 4 to count visits and see which pages are read, from which country and on which type of device. Google Analytics sets the cookies <code>_ga</code> and <code>_ga_*</code>, which last up to 2 years. Google does not record or store IP addresses in Google Analytics 4. Data is kept for 14 months, then deleted.</p>"
+            s[2] = "<h2>Cookies</h2><p>This site uses cookies for visit statistics with Google Analytics, never for advertising.</p>"
+            s.append("<h2>Visit statistics (Google Analytics)</h2><p>I use Google Analytics 4 to count visits and see which pages are read, from which country and on which type of device. Google Analytics sets the cookies <code>_ga</code> and <code>_ga_*</code>, which last up to 2 years. Google does not record or store IP addresses in Google Analytics 4. Data is kept for 14 months, then deleted.</p>"
                      "<p>The data is processed by Google (Google Ireland Limited for visitors in Europe, Google LLC in the USA). Google LLC is certified under the EU-US Data Privacy Framework. See <a href=\"https://policies.google.com/privacy\" rel=\"noopener\">Google's privacy policy</a> and <a href=\"https://policies.google.com/technologies/partner-sites\" rel=\"noopener\">how Google uses data from sites that use its services</a>.</p>"
-                     "<p>If you click \"Decline\", or don't answer, no Google script is loaded. You can change your choice at any time with the \"Cookie settings\" link at the bottom of every page. Your choice is remembered in your browser's local storage (key <code>consent</code>) for 13 months.</p>")
+                     "<p>You can block these cookies in your browser settings, or install <a href=\"https://tools.google.com/dlpage/gaoptout\" rel=\"noopener\">Google's opt-out add-on</a>.</p>")
         elif CF_ANALYTICS_TOKEN:
             s.append("<h2>Visit statistics</h2><p>I use Cloudflare Web Analytics to count visits and see which pages are read. It does not use cookies, does not store your IP address and does not follow you across other websites. Data is processed by Cloudflare, Inc. (USA). See the <a href=\"https://www.cloudflare.com/privacypolicy/\" rel=\"noopener\">Cloudflare privacy policy</a>.</p>")
         elif not GA4_ID:
@@ -387,10 +398,10 @@ def privacy(lang):
              "<h2>Préférences enregistrées dans votre navigateur</h2><p>Si vous changez le thème ou la langue, votre choix est enregistré dans le stockage local de votre navigateur (clés <code>theme</code> et <code>lang</code>) pour que le site s'en souvienne. Il ne quitte jamais votre appareil. Vous pouvez le supprimer en effaçant les données du site dans votre navigateur.</p>",
              "<h2>Hébergement</h2><p>Le site est hébergé par GitHub Pages (GitHub, Inc., États-Unis). Comme tout hébergeur, GitHub traite des données techniques, comme votre adresse IP, pour servir les pages et sécuriser le service. Voir la <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" rel=\"noopener\" hreflang=\"en\">déclaration de confidentialité de GitHub</a> (en anglais).</p>"]
         if GA4_ID:
-            s[2] = "<h2>Cookies</h2><p>Ce site ne dépose des cookies que si vous les acceptez dans le bandeau. Ils servent aux statistiques de visite avec Google Analytics, jamais à la publicité.</p>"
-            s.append("<h2>Statistiques de visite (Google Analytics)</h2><p>Si vous cliquez sur « Accepter », j'utilise Google Analytics 4 pour compter les visites et voir quelles pages sont lues, depuis quel pays et sur quel type d'appareil. Google Analytics dépose les cookies <code>_ga</code> et <code>_ga_*</code>, valables jusqu'à 2 ans. Google n'enregistre ni ne conserve les adresses IP dans Google Analytics 4. Les données sont conservées 14 mois, puis supprimées.</p>"
+            s[2] = "<h2>Cookies</h2><p>Ce site utilise des cookies pour les statistiques de visite avec Google Analytics, jamais pour la publicité.</p>"
+            s.append("<h2>Statistiques de visite (Google Analytics)</h2><p>J'utilise Google Analytics 4 pour compter les visites et voir quelles pages sont lues, depuis quel pays et sur quel type d'appareil. Google Analytics dépose les cookies <code>_ga</code> et <code>_ga_*</code>, valables jusqu'à 2 ans. Google n'enregistre ni ne conserve les adresses IP dans Google Analytics 4. Les données sont conservées 14 mois, puis supprimées.</p>"
                      "<p>Les données sont traitées par Google (Google Ireland Limited pour les visiteurs en Europe, Google LLC aux États-Unis). Google LLC est certifiée au titre du cadre de protection des données UE-États-Unis (Data Privacy Framework). Voir les <a href=\"https://policies.google.com/privacy?hl=fr\" rel=\"noopener\">règles de confidentialité de Google</a> et la page <a href=\"https://policies.google.com/technologies/partner-sites?hl=fr\" rel=\"noopener\">sur l'utilisation des données par Google sur les sites partenaires</a>.</p>"
-                     "<p>Si vous cliquez sur « Refuser », ou si vous ne répondez pas, aucun script Google n'est chargé. Vous pouvez changer d'avis à tout moment avec le lien « Gestion des cookies » en bas de chaque page. Votre choix est mémorisé dans le stockage local de votre navigateur (clé <code>consent</code>) pendant 13 mois.</p>")
+                     "<p>Vous pouvez bloquer ces cookies dans les réglages de votre navigateur, ou installer <a href=\"https://tools.google.com/dlpage/gaoptout?hl=fr\" rel=\"noopener\">le module de désactivation de Google</a>.</p>")
         elif CF_ANALYTICS_TOKEN:
             s.append("<h2>Statistiques de visite</h2><p>J'utilise Cloudflare Web Analytics pour compter les visites et voir quelles pages sont lues. Ce service n'utilise pas de cookies, ne conserve pas votre adresse IP et ne vous suit pas sur d'autres sites. Les données sont traitées par Cloudflare, Inc. (États-Unis). Voir la <a href=\"https://www.cloudflare.com/fr-fr/privacypolicy/\" rel=\"noopener\">politique de confidentialité de Cloudflare</a>.</p>")
         elif not GA4_ID:
@@ -401,7 +412,7 @@ def privacy(lang):
             s.append("<h2>Me contacter</h2><p>Si vous m'écrivez par e-mail, j'utilise votre message uniquement pour vous répondre, je ne le partage pas, et je le supprime dans les 24 mois suivant notre dernier échange.</p>")
         s.append("<h2>Liens vers d'autres sites</h2><p>Les liens vers LinkedIn et Upwork ouvrent ces services, qui appliquent leur propre politique de confidentialité.</p>")
         s.append(f"<h2>Vos droits</h2><p>Vous pouvez demander à consulter, corriger ou supprimer les données personnelles que je détiens sur vous en écrivant à <a href=\"mailto:{EMAIL}\">{EMAIL}</a>. Je réponds sous un mois. Si vous êtes dans l'Union européenne, vous pouvez aussi saisir votre autorité de protection des données (en France, la CNIL).</p>")
-    body = page_head(lang, pg["h1"], "", cr) + f'<section class="section"><div class="wrap prose legal">{"".join(s)}</div></section>'
+    body = page_head(lang, pg["h1"], "", cr) + f'<section class="frame doc doc--single"><div class="doc__body prose legal">{"".join(s)}</div></section>'
     return layout(lang, "privacy", PATHS["privacy"][lang], PATHS["privacy"][other(lang)], pg["title"], pg["desc"], body, [breadcrumbs_ld(cr)])
 
 def legal(lang):
@@ -417,16 +428,16 @@ def legal(lang):
              "<h2>Hébergeur</h2><p>GitHub, Inc.<br>88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis<br><a href=\"https://pages.github.com\" rel=\"noopener\">pages.github.com</a></p>",
              "<h2>Contenu</h2><p>Les textes de ce site sont la propriété de leur auteur. Les noms de produits et d'entreprises appartiennent à leurs propriétaires respectifs et ne sont cités que pour décrire le travail réalisé.</p>",
              f"<h2>Données personnelles</h2><p>Voir la <a href=\"{PATHS['privacy'][lang]}\">politique de confidentialité</a>.</p>"]
-    body = page_head(lang, pg["h1"], "", cr) + f'<section class="section"><div class="wrap prose legal">{"".join(s)}</div></section>'
+    body = page_head(lang, pg["h1"], "", cr) + f'<section class="frame doc doc--single"><div class="doc__body prose legal">{"".join(s)}</div></section>'
     return layout(lang, "legal", PATHS["legal"][lang], PATHS["legal"][other(lang)], pg["title"], pg["desc"], body, [breadcrumbs_ld(cr)])
 
 def not_found():
-    body = """<section class="notfound"><div class="wrap">
-<h1>Page not found</h1>
-<p>This page doesn't exist or has moved. Check the address, or go back to the home page.</p>
-<div class="actions"><a class="btn btn-primary" href="/">Go to the home page</a><a class="btn btn-ghost" href="/projects/">See the projects</a></div>
-<p lang="fr">Page introuvable. Cette page n'existe pas ou a été déplacée. <a href="/fr/">Retour à l'accueil en français</a>.</p>
-</div></section>"""
+    body = """<section class="frame head" aria-labelledby="page-h">
+<p class="case-tag">404</p>
+<h1 id="page-h">Page not found</h1>
+<p class="lede">This page doesn't exist or has moved. <a href="/">Go to the home page</a> or <a href="/projects/">see the work</a>.</p>
+<p class="lede" lang="fr">Cette page n'existe pas ou a été déplacée. <a href="/fr/">Retour à l'accueil en français</a>.</p>
+</section>"""
     return layout("en", "", "/404.html", "/fr/", f"Page not found | {NAME}", "This page doesn't exist.", body, noindex=True)
 
 # ---------- write ----------
@@ -489,8 +500,8 @@ def main():
   Cache-Control: public, max-age=31536000, immutable
 """)
     # minify CSS and JS
-    subprocess.run([ESBUILD, os.path.join(ROOT, "src/css/main.css"), "--minify", "--outfile=" + os.path.join(ROOT, "assets/css/main.min.css"), "--log-level=warning"], check=True)
-    for js in ["theme", "main"]:
+    subprocess.run([ESBUILD, os.path.join(ROOT, "src/css/site.css"), "--minify", "--outfile=" + os.path.join(ROOT, "assets/css/site.min.css"), "--log-level=warning"], check=True)
+    for js in ["theme", "main", "ga"]:
         subprocess.run([ESBUILD, os.path.join(ROOT, f"src/js/{js}.js"), "--minify", "--outfile=" + os.path.join(ROOT, f"assets/js/{js}.min.js"), "--log-level=warning"], check=True)
     print("built", len(sitemap), "pages + 404")
 

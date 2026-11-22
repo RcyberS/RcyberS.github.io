@@ -1,7 +1,6 @@
-// Runs in <head> before the page paints, so the saved theme never flashes.
+// Runs before the first paint so a saved theme never flashes.
 (function () {
-  var d = document.documentElement, t = null;
+  var t = null;
   try { t = localStorage.getItem("theme"); } catch (e) {}
-  d.setAttribute("data-theme", t === "light" || t === "dark" ? t : "dark");
-  d.classList.add("js");
+  document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
 })();
