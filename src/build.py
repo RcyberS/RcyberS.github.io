@@ -314,7 +314,14 @@ def project(lang, i):
     facts_html = "".join(f"<div><dt>{x}</dt><dd>{y}</dd></div>" for x, y in facts)
     extra = ""
     if p["case"] == "CASE-01":
-        extra = figure("/assets/img/wazuh-overview.webp", 1568, 500,
+        extra = figure("/assets/img/shuffle-workflow.webp", 1048, 806,
+                       T(lang, "Shuffle workflow Wazuh Alerts: Wazuh webhook, Shuffle Tools step, TheHive alert, then five conditional branches that add observables",
+                            "Workflow Shuffle Wazuh Alerts : webhook Wazuh, étape Shuffle Tools, alerte TheHive, puis cinq branches conditionnelles qui ajoutent les observables"),
+                       [T(lang, "The Shuffle workflow behind this pipeline: the Wazuh webhook comes in, a Shuffle Tools step prepares it, and TheHive gets the alert.",
+                              "Le workflow Shuffle derrière cette chaîne : le webhook Wazuh arrive, une étape Shuffle Tools le prépare, et TheHive reçoit l'alerte."),
+                        T(lang, "Each branch adds one type of observable only when the alert contains it: source IP, target email, RDP or AD source IP, SHA256 hash, host name.",
+                              "Chaque branche ajoute un type d'observable seulement si l'alerte le contient : IP source, e-mail ciblé, IP source RDP ou AD, empreinte SHA256, nom de machine.")])
+        extra += figure("/assets/img/wazuh-overview.webp", 1568, 500,
                        T(lang, "Wazuh overview: 52 active and 15 disconnected agents, and the alerts of the last 24 hours by severity",
                             "Vue d'ensemble Wazuh : 52 agents actifs et 15 déconnectés, et les alertes des dernières 24 heures par sévérité"),
                        [T(lang, "The Wazuh overview on the day this page was written: agents connected and alerts of the last 24 hours by severity.",
