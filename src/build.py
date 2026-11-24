@@ -81,6 +81,17 @@ OUT = '<svg class="ico ico--out" viewBox="0 0 16 16" fill="none" stroke="current
 DOWN = '<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 3v10M4 9l4 4 4-4"/></svg>'
 EXPAND = '<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>'
 SEAL = '<svg viewBox="0 0 40 40" fill="none" stroke="#0f1b2d" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="20" cy="17" r="10"/><circle cx="20" cy="17" r="6"/><path d="M14 25l-3 10 5-3 3 4 2-8M26 25l3 10-5-3-3 4-1-8"/></svg>'
+SOCIAL_ICONS = {
+    "linkedin": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>',
+    "upwork": '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06 1.492 0 2.703 1.212 2.703 2.703-.001 1.489-1.212 2.702-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H7.828v7.112c-.002 1.406-1.141 2.546-2.547 2.548-1.405-.002-2.543-1.143-2.545-2.548V3.492H0v7.112c0 2.914 2.37 5.303 5.281 5.303 2.913 0 5.283-2.389 5.283-5.303v-1.19c.529 1.107 1.182 2.229 1.974 3.221l-1.673 7.873h2.797l1.213-5.71c1.063.679 2.285 1.109 3.686 1.109 3 0 5.439-2.452 5.439-5.45 0-3-2.439-5.439-5.439-5.439z"/></svg>',
+}
+
+def social_buttons(lang, cls=""):
+    note = T(lang, "opens in a new tab", "s&#39;ouvre dans un nouvel onglet")
+    items = [("linkedin", "LinkedIn", LINKEDIN), ("upwork", "Upwork", UPWORK)]
+    links = "".join(f'<li><a class="social__btn social--{k}" href="{u}" aria-label="{n} ({note})" title="{n}">{SOCIAL_ICONS[k]}</a></li>' for k, n, u in items if u)
+    return f'<ul class="social{(" " + cls) if cls else ""}" role="list">{links}</ul>'
+
 MOON = '<svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
 
 def T(lang, en, fr):
@@ -147,7 +158,7 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <script defer src="/assets/js/main.min.js?v={ASSET_V}"></script>
 {ga}{ld_html}
 </head>
-<body>
+<body{' class="home-top"' if key == 'home' else ''}>
 <a class="skip" href="#main">{ui['skip']}</a>
 <header class="top{' top--home' if key == 'home' else ''}">
   <div class="frame top__row">
@@ -165,10 +176,9 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <footer class="foot">
   <div class="frame foot__row">
     <p>{NAME}, {CITY}</p>
+    {social_buttons(lang, "social--small")}
     <ul>
       <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
-      <li><a href="{LINKEDIN}">LinkedIn</a></li>
-      <li><a href="{UPWORK}">Upwork</a></li>{indeed_li}
       <li><a href="{PATHS['privacy'][lang]}">{ui['footer_links'][0][1]}</a></li>
       <li><a href="{PATHS['legal'][lang]}">{ui['footer_links'][1][1]}</a></li>
     </ul>
@@ -215,6 +225,47 @@ def case_grid(lang, h="h3", cta=True):
   </div>
 </li>""")
     return f'<ol class="cards" role="list">{"".join(cards)}</ol>'
+
+def flow_svg(lang):
+    """Logs from five sources reach Wazuh; only level 10+ alerts travel on to Shuffle and TheHive."""
+    src = T(lang, ["Endpoints and servers", "Web app firewall", "Active Directory", "Microsoft 365", "Mail server"],
+                  ["Postes et serveurs", "Pare-feu applicatif", "Active Directory", "Microsoft 365", "Serveur de messagerie"])
+    ys = [50, 120, 190, 260, 330]
+    parts = []
+    for i, (label, y) in enumerate(zip(src, ys)):
+        d = f"M150 {y} C 200 {y}, 196 190, 234 190"
+        parts.append(f'<text class="fl-src" x="140" y="{y + 5}" text-anchor="end">{label}</text>'
+                     f'<circle class="fl-port" cx="150" cy="{y}" r="3.5"/>'
+                     f'<path id="fl-p{i}" class="fl-line" d="{d}"/>')
+        for k in range(3):
+            begin = round(i * 0.37 + k * 1.1, 2)
+            parts.append(f'<circle class="fl-dot" r="3.5" opacity="0"><animateMotion dur="2.2s" begin="{begin}s" repeatCount="indefinite"><mpath href="#fl-p{i}"/></animateMotion>'
+                         f'<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.85;1" dur="2.2s" begin="{begin}s" repeatCount="indefinite"/></circle>')
+    def node(x, y, w, label, cls=""):
+        return (f'<g class="fl-node{cls}" tabindex="-1"><rect x="{x - w / 2}" y="{y - 19}" width="{w}" height="38" rx="10"/>'
+                f'<text x="{x}" y="{y + 5}" text-anchor="middle">{label}</text></g>')
+    alert_t = T(lang, "level ≥ 10", "niveau ≥ 10")
+    parts.append('<path id="fl-a" class="fl-line fl-line--alert" d="M306 190 H430"/>')
+    parts.append('<path id="fl-c" class="fl-line fl-line--enrich" d="M470 171 V109"/><path id="fl-m" class="fl-line fl-line--enrich" d="M470 209 V271"/>')
+    parts.append(f'<text class="fl-tag" x="368" y="166" text-anchor="middle">{alert_t}</text>')
+    parts.append(node(270, 190, 72, "Wazuh", " fl-node--hub"))
+    parts.append(node(470, 190, 80, "TheHive"))
+    parts.append(node(470, 90, 80, "Cortex"))
+    parts.append(node(470, 290, 80, "MISP"))
+    # Shuffle sits on the alert line
+    parts.append('<g class="fl-node fl-node--soar"><rect x="331" y="176" width="74" height="28" rx="14"/><text x="368" y="195" text-anchor="middle">Shuffle</text></g>')
+    for k in range(2):
+        b0 = 0.6 + k * 1.6
+        parts.append(f'<circle class="fl-alert" r="5" opacity="0"><animateMotion dur="3.2s" begin="{b0}s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;.3;.7;1" calcMode="linear"><mpath href="#fl-a"/></animateMotion>'
+                     f'<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.28;.32;.7;.74" dur="3.2s" begin="{b0}s" repeatCount="indefinite"/></circle>')
+    for pid in ("fl-c", "fl-m"):
+        parts.append(f'<circle class="fl-enrich" r="3.5" opacity="0"><animateMotion dur="3.2s" begin="0.6s" repeatCount="indefinite" keyPoints="0;0;1;0;0" keyTimes="0;.72;.84;.96;1" calcMode="linear"><mpath href="#{pid}"/></animateMotion>'
+                     f'<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.7;.74;.95;1" dur="3.2s" begin="0.6s" repeatCount="indefinite"/></circle>')
+    title = T(lang, "Animated diagram of my SOC log flow", "Schéma animé du flux de journaux de mon SOC")
+    desc = T(lang, "Logs from endpoints and servers, the web application firewall, Active Directory, Microsoft 365 and the mail server flow into Wazuh. Only alerts at level 10 or above go on through Shuffle to TheHive, where Cortex and MISP enrich them.",
+                   "Les journaux des postes et serveurs, du pare-feu applicatif, d'Active Directory, de Microsoft 365 et du serveur de messagerie arrivent dans Wazuh. Seules les alertes de niveau 10 ou plus passent par Shuffle jusqu'à TheHive, où Cortex et MISP les enrichissent.")
+    return (f'<svg class="flowmap" viewBox="0 28 560 324" role="img" aria-labelledby="fl-t fl-d"><title id="fl-t">{title}</title><desc id="fl-d">{desc}</desc>'
+            + "".join(parts) + "</svg>")
 
 def cert_list(lang):
     out = []
@@ -297,8 +348,8 @@ def home(lang):
     xp_html = "".join(f'<li><span class="when">{j["when"]}</span><span class="what"><b>{j["title"]}</b>{j["org"]}</span></li>' for j in EXPERIENCE[lang])
     sk_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in SKILLS[lang] if a not in ("Languages", "Langues"))
     flow = PROJECTS[0]["flow"][lang]
-    pipe_cap = T(lang, "The chain I built at AVEOLYS: every Wazuh alert at level 10 or above becomes a TheHive alert, enriched by Cortex and MISP.",
-                       "La chaîne que j'ai construite chez AVEOLYS : chaque alerte Wazuh de niveau 10 ou plus devient une alerte TheHive, enrichie par Cortex et MISP.")
+    pipe_cap = T(lang, "The log flow of the SOC I built at AVEOLYS: everything reaches Wazuh, and only alerts at level 10 or above go on to TheHive, where Cortex and MISP enrich them.",
+                       "Le flux de journaux du SOC que j'ai construit chez AVEOLYS : tout arrive dans Wazuh, et seules les alertes de niveau 10 ou plus vont jusqu'à TheHive, où Cortex et MISP les enrichissent.")
     roles = T(lang, ["Detects: SIEM with behavior analytics", "Routes every level 10+ alert and removes duplicates", "Opens the alert with its observables and MITRE TTPs", "Enrich it: analyzers and threat intelligence"],
                     ["Détecte : SIEM avec analyse comportementale", "Achemine chaque alerte de niveau 10+ et retire les doublons", "Ouvre l'alerte avec ses observables et ses TTP MITRE", "L'enrichissent : analyseurs et renseignement sur la menace"])
     nodes = "".join(f'<li class="pipe__node"><b>{x}</b><span>{roles[i]}</span></li>' for i, x in enumerate(flow))
@@ -312,9 +363,8 @@ def home(lang):
       <p class="hero__text enter" data-d="2">{intro}</p>
       <p class="hero__actions enter" data-d="3"><a class="btn btn--gold" href="#work">{l1} {DOWN}</a><a class="btn btn--line" href="{PATHS['contact'][lang]}">{l2} {ARROW}</a></p>
     </div>
-    <figure class="pipe enter" data-d="2">
-      <ol class="pipe__track">{nodes}</ol>
-      <span class="pipe__pulse" aria-hidden="true"></span>
+    <figure class="hero__flow enter" data-d="2">
+      {flow_svg(lang)}
       <figcaption>{pipe_cap}</figcaption>
     </figure>
     <dl class="hero__facts enter" data-d="4">{now_html}</dl>
@@ -354,7 +404,8 @@ def home(lang):
     <div><h2 id="ct-h">{contact_h}</h2><p>{contact_p}</p></div>
     <div class="reach__links">
       <a class="reach__mail" href="mailto:{EMAIL}">{EMAIL}</a>
-      <p class="reach__row"><a class="btn btn--line" href="{LINKEDIN}">LinkedIn</a><a class="btn btn--line" href="{UPWORK}">Upwork</a>{indeed_btn}</p>
+      <p class="reach__also">{T(lang, "Email is the best way to reach me. You can also find me on:", "L'e-mail reste le meilleur moyen de me joindre. Vous me trouverez aussi sur :")}</p>
+      {social_buttons(lang)}
     </div>
   </div>
 </section>"""
@@ -443,13 +494,11 @@ def contact(lang):
     pg = PAGES["contact"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["contact"][lang])]
     rows = [(T(lang, "Email", "E-mail"), f'<a href="mailto:{EMAIL}">{EMAIL}</a>'),
-            ("LinkedIn", f'<a href="{LINKEDIN}">razarison-romeo-bienvenu-stephanio</a>'),
-            ("Upwork", f'<a href="{UPWORK}">{T(lang, "Upwork profile", "Profil Upwork")}</a>'),
-            *([("Indeed", f'<a href="{INDEED}">{T(lang, "Indeed profile", "Profil Indeed")}</a>')] if INDEED else []),
+
             (T(lang, "Location", "Localisation"), f"{CITY}, {COUNTRY}"),
             (T(lang, "Time zone", "Fuseau horaire"), T(lang, "UTC+3, most of the European working day", "UTC+3, la plupart des heures de bureau européennes"))]
     dl = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in rows)
-    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block split" aria-label="{T(lang, "Contact details", "Coordonnées")}"><div></div><dl class="skills contact-list">{dl}</dl></section>'
+    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block split" aria-label="{T(lang, "Contact details", "Coordonnées")}"><div></div><div><dl class="skills contact-list">{dl}</dl><p class="reach__also">{T(lang, "Email is my preferred contact. You can also find me on:", "L&#39;e-mail est mon contact préféré. Vous me trouverez aussi sur :")}</p>{social_buttons(lang)}</div></section>'
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "ContactPage", "url": url(PATHS["contact"][lang]), "inLanguage": lang, "mainEntity": {"@id": SITE_URL + "/#person"}}]
     return layout(lang, "contact", PATHS["contact"][lang], PATHS["contact"][other(lang)], pg["title"], pg["desc"], body, ld)
 
@@ -544,9 +593,11 @@ def external_links(html, lang):
         if href.startswith(SITE_URL):
             return m.group(0)
         rest = re.sub(r'\s*rel="[^"]*"', "", rest)
+        if "social__btn" in cls:
+            return f'<a {cls}href="{href}" target="_blank" rel="noopener noreferrer"{rest}>{inner}</a>'
         return f'<a {cls}href="{href}" target="_blank" rel="noopener noreferrer"{rest}>{inner}{OUT}<span class="sr-only"> {note}</span></a>'
-    head, sep, body = html.partition("<body>")
-    return head + sep + EXT.sub(fix, body)
+    i = html.find("<body")
+    return html[:i] + EXT.sub(fix, html[i:])
 
 def write(path, html):
     html = external_links(html, "fr" if path.startswith("/fr/") else "en")

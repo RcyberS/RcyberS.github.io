@@ -18,19 +18,10 @@
     a.addEventListener("click", function () { try { localStorage.setItem("lang", a.getAttribute("hreflang")); } catch (e) {} });
   });
 
-  // the alert pulse in the hero runs from the first node to the last
-  var track = document.querySelector(".pipe__track"), pulse = document.querySelector(".pipe__pulse");
-  if (track && pulse) {
-    var place = function () {
-      var n = track.children, box = pulse.parentNode.getBoundingClientRect();
-      if (!n.length) return;
-      var a = n[0].getBoundingClientRect(), b = n[n.length - 1].getBoundingClientRect();
-      pulse.style.left = (a.left - box.left + 18 - 5) + "px";
-      pulse.style.top = (a.top - box.top + a.height / 2 - 5) + "px";
-      pulse.style.setProperty("--run", (b.top + b.height / 2 - a.top - a.height / 2) + "px");
-    };
-    place();
-    window.addEventListener("resize", place);
+  // the log-flow diagram stands still for people who ask for less motion
+  var map = document.querySelector(".flowmap");
+  if (map && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches && map.pauseAnimations) {
+    map.pauseAnimations();
   }
 
   // the case list and the timeline come in once, when they reach the screen
