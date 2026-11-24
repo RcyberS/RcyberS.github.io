@@ -1,3 +1,6 @@
 *.pyc
 .taste-skill/
 __pycache__/
+PRODUCT.md
+DESIGN.md
+.impeccable/

@@ -21,3 +21,4 @@ CF_ANALYTICS_TOKEN = ""
 # Web3Forms access key for the contact form (free, sent to EMAIL). Get one at web3forms.com.
 # Leave empty to show contact links only, with no form.
 WEB3FORMS_KEY = ""
+INDEED = ""  # public Indeed profile link, empty = hidden

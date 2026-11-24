@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Builds the static site into the repository root. Run: python3 src/build.py"""
-import json, os, shutil, subprocess, sys
+import json, os, re, shutil, subprocess, sys
 from html import escape
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -55,7 +55,7 @@ def person_ld(lang):
         "address": {"@type": "PostalAddress", "addressLocality": CITY, "addressCountry": "MG"},
         "worksFor": {"@type": "Organization", "name": "AVEOLYS"},
         "alumniOf": {"@type": "CollegeOrUniversity", "name": "IST Antsiranana"},
-        "knowsLanguage": ["en", "fr", "mg"], "sameAs": [LINKEDIN, UPWORK],
+        "knowsLanguage": ["en", "fr", "mg"], "sameAs": [x for x in (LINKEDIN, UPWORK, INDEED) if x],
         "knowsAbout": ["Security operations", "SIEM", "Incident response", "Penetration testing", "Active Directory security", "Network security", "Identity and access management"],
     }
 
@@ -76,6 +76,11 @@ def crumbs_html(lang, items):
 
 # ---------- layout ----------
 SUN = '<svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+ARROW = '<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>'
+OUT = '<svg class="ico ico--out" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11l6-6M6 5h5v5"/></svg>'
+DOWN = '<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 3v10M4 9l4 4 4-4"/></svg>'
+EXPAND = '<svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>'
+SEAL = '<svg viewBox="0 0 40 40" fill="none" stroke="#0f1b2d" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="20" cy="17" r="10"/><circle cx="20" cy="17" r="6"/><path d="M14 25l-3 10 5-3 3 4 2-8M26 25l3 10-5-3-3 4-1-8"/></svg>'
 MOON = '<svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
 
 def T(lang, en, fr):
@@ -103,6 +108,7 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
                     f'<link rel="alternate" hreflang="x-default" href="{url(en_p)}">')
     og_img = url(f"/assets/img/og-{lang}.png")
     robots = '<meta name="robots" content="noindex">' if noindex else ""
+    indeed_li = f'<li><a href="{INDEED}">Indeed</a></li>' if INDEED else ""
     ga = f'<script defer src="/assets/js/ga.min.js?v={ASSET_V}" data-id="{GA4_ID}"></script>' if GA4_ID else ""
     return f"""<!DOCTYPE html>
 <html lang="{lang}" data-theme="light">
@@ -130,7 +136,7 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <meta name="twitter:title" content="{escape(title)}">
 <meta name="twitter:description" content="{escape(desc)}">
 <meta name="twitter:image" content="{og_img}">
-<meta name="theme-color" content="#f6f6f3">
+<meta name="theme-color" content="#0f1b2d">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
@@ -143,7 +149,7 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 </head>
 <body>
 <a class="skip" href="#main">{ui['skip']}</a>
-<header class="top">
+<header class="top{' top--home' if key == 'home' else ''}">
   <div class="frame top__row">
     <a class="top__name" href="{PATHS['home'][lang]}">{NAME}</a>
     <nav class="top__nav" aria-label="{T(lang, 'Main', 'Principale')}"><ul>{''.join(nav)}</ul></nav>
@@ -161,8 +167,8 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
     <p>{NAME}, {CITY}</p>
     <ul>
       <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
-      <li><a href="{LINKEDIN}" rel="noopener">LinkedIn</a></li>
-      <li><a href="{UPWORK}" rel="noopener">Upwork</a></li>
+      <li><a href="{LINKEDIN}">LinkedIn</a></li>
+      <li><a href="{UPWORK}">Upwork</a></li>{indeed_li}
       <li><a href="{PATHS['privacy'][lang]}">{ui['footer_links'][0][1]}</a></li>
       <li><a href="{PATHS['legal'][lang]}">{ui['footer_links'][1][1]}</a></li>
     </ul>
@@ -179,28 +185,56 @@ def page_head(lang, h1, lead, crumbs, case=None):
     return (f'<section class="frame head" aria-labelledby="page-h">{crumbs_html(lang, crumbs)}{tag}'
             f'<h1 id="page-h">{h1}</h1>{lead_html}</section>')
 
-def case_index(lang, h="h3"):
-    """The recurring idea: projects listed the way a SOC lists its cases."""
-    cols = T(lang, ("Case", "What", "Where", "Status"), ("Cas", "Quoi", "Où", "Statut"))
-    rows = []
-    for p in PROJECTS:
-        shots = f'<span class="case__shots">{T(lang, "With screenshots of the Shuffle workflow and the Wazuh dashboards", "Avec captures du workflow Shuffle et des tableaux de bord Wazuh")}</span>' if p["case"] == "CASE-01" else ""
-        rows.append(f"""<li class="case">
-  <a class="case__link" href="{project_path(p, lang)}">
-    <span class="case__id">{p['case']}</span>
-    <span class="case__what"><{h} class="case__title">{p['title'][lang]}</{h}><span class="case__line">{p['card'][lang]}</span>{shots}</span>
-    <span class="case__where">{p['org'][lang]}</span>
-    <span class="case__status">{p['status'][lang]}</span>
-    <span class="case__go" aria-hidden="true">{T(lang, "Open", "Ouvrir")} →</span>
+def case_grid(lang, h="h3", cta=True):
+    """The six cases as a bento: CASE-01 wide, a closing card that asks for contact."""
+    cards = []
+    for i, p in enumerate(PROJECTS):
+        live = p["status"]["en"] == "In production"
+        tools = "".join(f"<li>{t}</li>" for t in p["tools"][:4])
+        shots = (f'<p class="card__shots">{T(lang, "3 screenshots inside: Shuffle workflow, Wazuh overview, MITRE ATT&amp;CK", "3 captures à l&#39;intérieur : workflow Shuffle, vue Wazuh, MITRE ATT&amp;CK")}</p>'
+                 if p["case"] == "CASE-01" else "")
+        flow = ""
+        if p["case"] == "CASE-01":
+            flow = '<ol class="card__flow" aria-label="' + T(lang, "Pipeline", "Chaîne") + '">' + "".join(f"<li>{x}</li>" for x in p["flow"][lang]) + "</ol>"
+        cards.append(f"""<li class="card{' card--wide' if i in (0, 5) else ''}">
+  <a class="card__link" href="{project_path(p, lang)}">
+    <span class="card__top"><span class="card__id">{p['case']}</span><span class="status{' status--live' if live else ''}"><span class="status__dot" aria-hidden="true"></span>{p['status'][lang]}</span></span>
+    <{h} class="card__title">{p['title'][lang]}</{h}>
+    <p class="card__line">{p['card'][lang]}</p>
+    {shots}
+    <ul class="chips" aria-label="{T(lang, 'Tools', 'Outils')}">{tools}</ul>
+    <span class="card__go">{T(lang, 'Open the case', 'Ouvrir le cas')} {ARROW}</span>
   </a>
 </li>""")
-    head = f'<div class="cases__head" aria-hidden="true"><span>{cols[0]}</span><span>{cols[1]}</span><span>{cols[2]}</span><span>{cols[3]}</span></div>'
-    return f'<div class="cases">{head}<ol class="cases__list">{"".join(rows)}</ol></div>'
+    if cta:
+        cards.append(f"""<li class="card card--cta">
+  <div class="card__cta">
+    <p class="card__title">{T(lang, 'Need a SOC built or a team to lead?', 'Un SOC à construire ou une équipe à diriger ?')}</p>
+    <p class="card__line">{T(lang, 'I reply in English or French, usually within a day.', 'Je réponds en français ou en anglais, en général sous 24 heures.')}</p>
+    <a class="btn btn--gold" href="{PATHS['contact'][lang]}">{T(lang, 'Get in touch', 'Me contacter')} {ARROW}</a>
+  </div>
+</li>""")
+    return f'<ol class="cards" role="list">{"".join(cards)}</ol>'
+
+def cert_list(lang):
+    out = []
+    for c in CERT_CARDS:
+        logo = (f'<img src="{c["logo"]}" alt="{c["issuer"]}" width="56" height="56" loading="lazy" decoding="async">' if c["logo"]
+                else f'<span class="cert__seal">{SEAL}</span>')
+        out.append(f"""<li class="cert{'' if c['done'] else ' cert--pending'}">
+  <span class="cert__logo">{logo}</span>
+  <span class="cert__body"><span class="cert__name">{c['name'][lang]}</span><span class="cert__issuer">{c['issuer']}</span></span>
+  <span class="cert__state">{c['state'][lang]}</span>
+</li>""")
+    return f'<ul class="certs" role="list">{"".join(out)}</ul>'
 
 def figure(src, w, h, alt, notes):
+    """A screenshot shows as a small preview; the full image and its notes open on click."""
     note_html = "".join(f"<li>{n}</li>" for n in notes)
-    return (f'<figure class="shot"><img src="{src}" width="{w}" height="{h}" alt="{alt}" loading="lazy" decoding="async">'
-            f'<figcaption><ol class="notes">{note_html}</ol></figcaption></figure>')
+    return (f'<li class="thumb"><a class="thumb__link" href="{src}" data-w="{w}" data-h="{h}">'
+            f'<img src="{src}" width="{w}" height="{h}" alt="{alt}" loading="lazy" decoding="async">'
+            f'<span class="thumb__cap">{notes[0]}</span><span class="thumb__open">{EXPAND}</span></a>'
+            f'<ol class="notes" hidden>{note_html}</ol></li>')
 
 # ---------- pages ----------
 def home(lang):
@@ -257,42 +291,56 @@ def home(lang):
         more = "Parcours complet"
         contact_h = "Me contacter"
         contact_p = "Pour un poste, une mission ou une revue de vos opérations de sécurité. L'e-mail est le moyen le plus rapide ; je réponds en français ou en anglais."
+    indeed_btn = f'<a class="btn btn--line" href="{INDEED}">Indeed</a>' if INDEED else ""
     now_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in now)
     how_html = "".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in how)
     xp_html = "".join(f'<li><span class="when">{j["when"]}</span><span class="what"><b>{j["title"]}</b>{j["org"]}</span></li>' for j in EXPERIENCE[lang])
     sk_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in SKILLS[lang] if a not in ("Languages", "Langues"))
-    body = f"""<section class="frame intro" aria-labelledby="hello">
-  <div class="intro__main">
-    <h1 id="hello">{NAME}</h1>
-    <p class="intro__role">{role}</p>
-    <p class="intro__where">{where}</p>
-    <p class="intro__text">{intro}</p>
-    <p class="intro__links"><a href="#work">{l1} <span aria-hidden="true">→</span></a><a href="{PATHS['contact'][lang]}">{l2} <span aria-hidden="true">→</span></a></p>
+    flow = PROJECTS[0]["flow"][lang]
+    pipe_cap = T(lang, "The chain I built at AVEOLYS: every Wazuh alert at level 10 or above becomes a TheHive alert, enriched by Cortex and MISP.",
+                       "La chaîne que j'ai construite chez AVEOLYS : chaque alerte Wazuh de niveau 10 ou plus devient une alerte TheHive, enrichie par Cortex et MISP.")
+    roles = T(lang, ["Detects: SIEM with behavior analytics", "Routes every level 10+ alert and removes duplicates", "Opens the alert with its observables and MITRE TTPs", "Enrich it: analyzers and threat intelligence"],
+                    ["Détecte : SIEM avec analyse comportementale", "Achemine chaque alerte de niveau 10+ et retire les doublons", "Ouvre l'alerte avec ses observables et ses TTP MITRE", "L'enrichissent : analyseurs et renseignement sur la menace"])
+    nodes = "".join(f'<li class="pipe__node"><b>{x}</b><span>{roles[i]}</span></li>' for i, x in enumerate(flow))
+    cert_h = T(lang, "Certifications and education", "Certifications et formation")
+    body = f"""<section class="hero" aria-labelledby="hello">
+  <div class="frame hero__grid">
+    <div class="hero__main">
+      <h1 id="hello" class="enter" data-d="0">{NAME}</h1>
+      <p class="hero__role enter" data-d="1">{role}</p>
+      <p class="hero__where enter" data-d="2">{where}</p>
+      <p class="hero__text enter" data-d="2">{intro}</p>
+      <p class="hero__actions enter" data-d="3"><a class="btn btn--gold" href="#work">{l1} {DOWN}</a><a class="btn btn--line" href="{PATHS['contact'][lang]}">{l2} {ARROW}</a></p>
+    </div>
+    <figure class="pipe enter" data-d="2">
+      <ol class="pipe__track">{nodes}</ol>
+      <span class="pipe__pulse" aria-hidden="true"></span>
+      <figcaption>{pipe_cap}</figcaption>
+    </figure>
+    <dl class="hero__facts enter" data-d="4">{now_html}</dl>
   </div>
-  <dl class="intro__side margin">{now_html}</dl>
 </section>
 
 <section class="frame block" id="work" aria-labelledby="work-h">
   <div class="block__head"><h2 id="work-h">{work_h}</h2><p>{work_p}</p></div>
-  {case_index(lang)}
-</section>
-
-<section class="frame block" aria-labelledby="shot-h">
-  <div class="block__head"><h2 id="shot-h">{shot_h}</h2><p><a href="{project_path(PROJECTS[0], lang)}#screens">{shot_more} <span aria-hidden="true">→</span></a></p></div>
-  {figure('/assets/img/shuffle-workflow.webp', 1048, 806, flow_alt, flow_notes)}
-  {figure('/assets/img/wazuh-mitre.webp', 1568, 731, shot_alt, shot_notes)}
+  {case_grid(lang)}
 </section>
 
 <section class="frame block split" aria-labelledby="how-h">
   <div class="block__head"><h2 id="how-h">{how_h}</h2></div>
   <div>
-    <p class="quote">{quote}</p>
-    <ol class="how">{how_html}</ol>
+    <blockquote class="quote"><p>{quote}</p></blockquote>
+    <ul class="how">{how_html}</ul>
   </div>
 </section>
 
+<section class="frame block split" aria-labelledby="ce-h">
+  <div class="block__head"><h2 id="ce-h">{cert_h}</h2></div>
+  {cert_list(lang)}
+</section>
+
 <section class="frame block split" aria-labelledby="xp-h">
-  <div class="block__head"><h2 id="xp-h">{xp_h}</h2><p><a href="{PATHS['about'][lang]}">{more} <span aria-hidden="true">→</span></a></p></div>
+  <div class="block__head"><h2 id="xp-h">{xp_h}</h2><p><a class="more" href="{PATHS['about'][lang]}">{more} {ARROW}</a></p></div>
   <ol class="xp">{xp_html}</ol>
 </section>
 
@@ -301,9 +349,14 @@ def home(lang):
   <dl class="skills">{sk_html}</dl>
 </section>
 
-<section class="frame block split contact-block" aria-labelledby="ct-h">
-  <div class="block__head"><h2 id="ct-h">{contact_h}</h2></div>
-  <div><p>{contact_p}</p><p class="big-link"><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>
+<section class="reach" aria-labelledby="ct-h">
+  <div class="frame reach__grid">
+    <div><h2 id="ct-h">{contact_h}</h2><p>{contact_p}</p></div>
+    <div class="reach__links">
+      <a class="reach__mail" href="mailto:{EMAIL}">{EMAIL}</a>
+      <p class="reach__row"><a class="btn btn--line" href="{LINKEDIN}">LinkedIn</a><a class="btn btn--line" href="{UPWORK}">Upwork</a>{indeed_btn}</p>
+    </div>
+  </div>
 </section>"""
     ld = [person_ld(lang), {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": url(PATHS["home"][lang]), "inLanguage": lang}]
     return layout(lang, "home", PATHS["home"][lang], PATHS["home"][other(lang)], pg["title"], pg["desc"], body, ld)
@@ -311,7 +364,7 @@ def home(lang):
 def projects(lang):
     pg = PAGES["projects"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["projects"][lang])]
-    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block" aria-label="{T(lang, "Case index", "Index des cas")}">{case_index(lang, "h2")}</section>'
+    body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block" aria-label="{T(lang, "Case index", "Index des cas")}">{case_grid(lang, "h2", cta=False)}</section>'
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "CollectionPage", "name": pg["h1"], "url": url(PATHS["projects"][lang]), "inLanguage": lang,
           "hasPart": [{"@type": "CreativeWork", "name": p["title"][lang], "url": url(project_path(p, lang))} for p in PROJECTS]}]
     return layout(lang, "projects", PATHS["projects"][lang], PATHS["projects"][other(lang)], pg["title"], pg["desc"], body, ld)
@@ -326,7 +379,7 @@ def project(lang, i):
     facts_html = "".join(f"<div><dt>{x}</dt><dd>{y}</dd></div>" for x, y in facts)
     extra = ""
     if p["case"] == "CASE-01":
-        facts_html += f'<div><dt>{T(lang, "Screenshots", "Captures")}</dt><dd><a href="#screens">{T(lang, "Shuffle and Wazuh, further down", "Shuffle et Wazuh, plus bas")} ↓</a></dd></div>'
+        facts_html += f'<div><dt>{T(lang, "Screenshots", "Captures")}</dt><dd><a href="#screens">{T(lang, "Shuffle and Wazuh, further down", "Shuffle et Wazuh, plus bas")}</a></dd></div>'
         extra = figure("/assets/img/shuffle-workflow.webp", 1048, 806,
                        T(lang, "Shuffle workflow Wazuh Alerts: Wazuh webhook, Shuffle Tools step, TheHive alert, then five conditional branches that add observables",
                             "Workflow Shuffle Wazuh Alerts : webhook Wazuh, étape Shuffle Tools, alerte TheHive, puis cinq branches conditionnelles qui ajoutent les observables"),
@@ -346,7 +399,17 @@ def project(lang, i):
         extra += figure("/assets/img/wazuh-mitre.webp", 1568, 731,
                         T(lang, "Wazuh MITRE ATT&CK dashboard with host names blurred", "Tableau de bord MITRE ATT&CK de Wazuh, noms de machines floutés"),
                         [T(lang, "The same SOC seen through MITRE ATT&amp;CK. Client host names are blurred.", "Le même SOC vu par MITRE ATT&amp;CK. Les noms des machines clientes sont floutés.")])
-    screens = f'<section id="screens" class="screens"><h2>{T(lang, "Screenshots", "Captures")}</h2>{extra}</section>' if extra else ""
+    screens = ""
+    if extra:
+        close = T(lang, "Close", "Fermer"); prv = T(lang, "Previous screenshot", "Capture précédente"); nxt = T(lang, "Next screenshot", "Capture suivante")
+        screens = (f'<section id="screens" class="screens"><h2>{T(lang, "Screenshots", "Captures")}</h2>'
+                   f'<p class="screens__hint">{T(lang, "Select a screenshot to see it full size, with its notes. Sensitive data is blurred.", "Sélectionnez une capture pour la voir en grand, avec ses notes. Les données sensibles sont floutées.")}</p>'
+                   f'<ul class="thumbs" role="list">{extra}</ul></section>'
+                   f'<dialog class="viewer" aria-label="{T(lang, "Screenshot", "Capture")}"><div class="viewer__bar"><span class="viewer__count"></span>'
+                   f'<button type="button" class="viewer__btn" data-go="-1" aria-label="{prv}"><svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg></button>'
+                   f'<button type="button" class="viewer__btn" data-go="1" aria-label="{nxt}">{ARROW}</button>'
+                   f'<button type="button" class="viewer__btn viewer__close" aria-label="{close}"><svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>'
+                   f'<img class="viewer__img" alt=""><ol class="notes viewer__notes"></ol></dialog>')
     body = page_head(lang, p["title"][lang], p["summary"][lang], cr, case=p["case"]) + f"""<div class="frame doc">
 <dl class="doc__facts margin">{facts_html}</dl>
 <article class="doc__body prose">{p['body'][lang]}{screens}</article>
@@ -371,7 +434,7 @@ def about(lang):
     body = page_head(lang, pg["h1"], pg["lead"], cr) + f"""
 <section class="frame block split" aria-labelledby="xp"><div class="block__head"><h2 id="xp">{h_xp}</h2></div><ol class="jobs">{xp}</ol></section>
 <section class="frame block split" aria-labelledby="sk"><div class="block__head"><h2 id="sk">{h_sk}</h2></div><dl class="skills">{skills}</dl></section>
-<section class="frame block split" aria-labelledby="ce"><div class="block__head"><h2 id="ce">{h_ce}</h2></div><dl class="skills">{certs}</dl></section>
+<section class="frame block split" aria-labelledby="ce"><div class="block__head"><h2 id="ce">{h_ce}</h2></div>{cert_list(lang)}</section>
 """
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "ProfilePage", "url": url(PATHS["about"][lang]), "inLanguage": lang, "mainEntity": person_ld(lang)}]
     return layout(lang, "about", PATHS["about"][lang], PATHS["about"][other(lang)], pg["title"], pg["desc"], body, ld, og_type="profile")
@@ -380,8 +443,9 @@ def contact(lang):
     pg = PAGES["contact"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["contact"][lang])]
     rows = [(T(lang, "Email", "E-mail"), f'<a href="mailto:{EMAIL}">{EMAIL}</a>'),
-            ("LinkedIn", f'<a href="{LINKEDIN}" rel="noopener">razarison-romeo-bienvenu-stephanio</a>'),
-            ("Upwork", f'<a href="{UPWORK}" rel="noopener">{T(lang, "Upwork profile", "Profil Upwork")}</a>'),
+            ("LinkedIn", f'<a href="{LINKEDIN}">razarison-romeo-bienvenu-stephanio</a>'),
+            ("Upwork", f'<a href="{UPWORK}">{T(lang, "Upwork profile", "Profil Upwork")}</a>'),
+            *([("Indeed", f'<a href="{INDEED}">{T(lang, "Indeed profile", "Profil Indeed")}</a>')] if INDEED else []),
             (T(lang, "Location", "Localisation"), f"{CITY}, {COUNTRY}"),
             (T(lang, "Time zone", "Fuseau horaire"), T(lang, "UTC+3, most of the European working day", "UTC+3, la plupart des heures de bureau européennes"))]
     dl = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in rows)
@@ -470,7 +534,22 @@ def french_spacing(html):
         html = html.replace(" " + mark + " ", sp + mark + " ").replace(" " + mark + "<", sp + mark + "<")
     return html
 
+EXT = re.compile(r'<a ((?:class="[^"]*" )?)href="(https?://[^"]+)"([^>]*)>(.*?)</a>', re.S)
+
+def external_links(html, lang):
+    """Every link to another site opens in a new tab and says so to screen readers."""
+    note = "(opens in a new tab)" if lang == "en" else "(s'ouvre dans un nouvel onglet)"
+    def fix(m):
+        cls, href, rest, inner = m.groups()
+        if href.startswith(SITE_URL):
+            return m.group(0)
+        rest = re.sub(r'\s*rel="[^"]*"', "", rest)
+        return f'<a {cls}href="{href}" target="_blank" rel="noopener noreferrer"{rest}>{inner}{OUT}<span class="sr-only"> {note}</span></a>'
+    head, sep, body = html.partition("<body>")
+    return head + sep + EXT.sub(fix, body)
+
 def write(path, html):
+    html = external_links(html, "fr" if path.startswith("/fr/") else "en")
     if path.startswith("/fr/"):
         html = french_spacing(html)
     target = os.path.join(ROOT, path.strip("/"), "index.html") if path.endswith("/") else os.path.join(ROOT, path.strip("/"))

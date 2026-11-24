@@ -480,3 +480,11 @@ PAGES = {
 
 ORDER = ["CASE-01", "CASE-02", "CASE-03", "CASE-04", "CASE-05", "CASE-06"]
 PROJECTS = sorted(PROJECTS_RAW, key=lambda p: ORDER.index(p["case"]))
+
+# certificates with their issuer logos (logo None = waiting for the official file)
+CERT_CARDS = [
+    {"logo": None, "issuer": "EC-Council", "name": {"en": "Certified SOC Analyst (CSA)", "fr": "Certified SOC Analyst (CSA)"}, "state": {"en": "Certified", "fr": "Certifié"}, "done": True},
+    {"logo": "/assets/img/logos/cisco.svg", "issuer": "Cisco Networking Academy", "name": {"en": "Ethical Hacker", "fr": "Ethical Hacker"}, "state": {"en": "Completed", "fr": "Obtenu"}, "done": True},
+    {"logo": "/assets/img/logos/isc2.svg", "issuer": "ISC2", "name": {"en": "CISSP", "fr": "CISSP"}, "state": {"en": "In preparation", "fr": "En préparation"}, "done": False},
+    {"logo": "/assets/img/logos/ist.png", "issuer": "IST Antsiranana", "name": {"en": "Bachelor's degree, Systems and Networks", "fr": "Licence, Systèmes et Réseaux"}, "state": {"en": "2021", "fr": "2021"}, "done": True},
+]
