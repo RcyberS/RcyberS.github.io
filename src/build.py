@@ -201,8 +201,8 @@ def case_grid(lang, h="h3", cta=True):
     for i, p in enumerate(PROJECTS):
         live = p["status"]["en"] == "In production"
         tools = "".join(f"<li>{t}</li>" for t in p["tools"][:4])
-        shots = (f'<p class="card__shots">{T(lang, "3 screenshots inside: Shuffle workflow, Wazuh overview, MITRE ATT&amp;CK", "3 captures à l&#39;intérieur : workflow Shuffle, vue Wazuh, MITRE ATT&amp;CK")}</p>'
-                 if p["case"] == "CASE-01" else "")
+        n = len(SHOTS.get(p["case"], []))
+        shots = f'<p class="card__shots">{T(lang, f"{n} screenshots inside", f"{n} captures à l&#39;intérieur")}</p>' if n else ""
         flow = ""
         if p["case"] == "CASE-01":
             flow = '<ol class="card__flow" aria-label="' + T(lang, "Pipeline", "Chaîne") + '">' + "".join(f"<li>{x}</li>" for x in p["flow"][lang]) + "</ol>"
@@ -279,11 +279,16 @@ def cert_list(lang):
 </li>""")
     return f'<ul class="certs" role="list">{"".join(out)}</ul>'
 
+def img_size(fname):
+    from PIL import Image
+    with Image.open(os.path.join(ROOT, "assets", "img", fname)) as im:
+        return im.size
+
 def figure(src, w, h, alt, notes):
     """A screenshot shows as a small preview; the full image and its notes open on click."""
     note_html = "".join(f"<li>{n}</li>" for n in notes)
     return (f'<li class="thumb"><a class="thumb__link" href="{src}" data-w="{w}" data-h="{h}">'
-            f'<img src="{src}" width="{w}" height="{h}" alt="{alt}" loading="lazy" decoding="async">'
+            f'<img src="{src.replace(".webp", "-thumb.webp")}" width="800" height="500" alt="{alt}" loading="lazy" decoding="async">'
             f'<span class="thumb__cap">{notes[0]}</span><span class="thumb__open">{EXPAND}</span></a>'
             f'<ol class="notes" hidden>{note_html}</ol></li>')
 
@@ -429,27 +434,12 @@ def project(lang, i):
     facts = [(T(lang, "Status", "Statut"), p["status"][lang]), (a["role"], p["role"][lang]), (a["org"], p["org"][lang]), (a["period"], p["period"][lang]), (a["tools"], ", ".join(p["tools"]))]
     facts_html = "".join(f"<div><dt>{x}</dt><dd>{y}</dd></div>" for x, y in facts)
     extra = ""
-    if p["case"] == "CASE-01":
-        facts_html += f'<div><dt>{T(lang, "Screenshots", "Captures")}</dt><dd><a href="#screens">{T(lang, "Shuffle and Wazuh, further down", "Shuffle et Wazuh, plus bas")}</a></dd></div>'
-        extra = figure("/assets/img/shuffle-workflow.webp", 1048, 806,
-                       T(lang, "Shuffle workflow Wazuh Alerts: Wazuh webhook, Shuffle Tools step, TheHive alert, then five conditional branches that add observables",
-                            "Workflow Shuffle Wazuh Alerts : webhook Wazuh, étape Shuffle Tools, alerte TheHive, puis cinq branches conditionnelles qui ajoutent les observables"),
-                       [T(lang, "The Shuffle workflow behind this pipeline: the Wazuh webhook comes in, a Shuffle Tools step prepares it, and TheHive gets the alert.",
-                              "Le workflow Shuffle derrière cette chaîne : le webhook Wazuh arrive, une étape Shuffle Tools le prépare, et TheHive reçoit l'alerte."),
-                        T(lang, "Each branch adds one type of observable only when the alert contains it: source IP, target email, RDP or AD source IP, SHA256 hash, host name.",
-                              "Chaque branche ajoute un type d'observable seulement si l'alerte le contient : IP source, e-mail ciblé, IP source RDP ou AD, empreinte SHA256, nom de machine."),
-                        T(lang, "The step at the top reads the MITRE ATT&amp;CK technique IDs of the Wazuh rule, asks TheHive which tactic each belongs to, and adds them to the alert as TTPs. That is why every custom rule I write carries a MITRE block.",
-                              "L'étape du haut lit les ID de techniques MITRE ATT&amp;CK de la règle Wazuh, demande à TheHive la tactique de chacune et les ajoute à l'alerte comme TTP. C'est pour ça que chaque règle personnalisée que j'écris porte un bloc MITRE.")])
-        extra += figure("/assets/img/wazuh-overview.webp", 1568, 500,
-                       T(lang, "Wazuh overview: 52 active and 15 disconnected agents, and the alerts of the last 24 hours by severity",
-                            "Vue d'ensemble Wazuh : 52 agents actifs et 15 déconnectés, et les alertes des dernières 24 heures par sévérité"),
-                       [T(lang, "The Wazuh overview on the day this page was written: agents connected and alerts of the last 24 hours by severity.",
-                              "La vue d'ensemble Wazuh le jour où cette page a été écrite : agents connectés et alertes des dernières 24 heures par sévérité."),
-                        T(lang, "Most alerts sit in the low levels on purpose: only level 10 and above opens a case.",
-                              "La plupart des alertes restent volontairement aux niveaux bas : seul le niveau 10 et plus ouvre un cas.")])
-        extra += figure("/assets/img/wazuh-mitre.webp", 1568, 731,
-                        T(lang, "Wazuh MITRE ATT&CK dashboard with host names blurred", "Tableau de bord MITRE ATT&CK de Wazuh, noms de machines floutés"),
-                        [T(lang, "The same SOC seen through MITRE ATT&amp;CK. Client host names are blurred.", "Le même SOC vu par MITRE ATT&amp;CK. Les noms des machines clientes sont floutés.")])
+    shots = SHOTS.get(p["case"], [])
+    if shots:
+        facts_html += f'<div><dt>{T(lang, "Screenshots", "Captures")}</dt><dd><a href="#screens">{T(lang, f"{len(shots)}, further down", f"{len(shots)}, plus bas")}</a></dd></div>'
+        for fname, alt, notes in shots:
+            w, h = img_size(fname)
+            extra += figure(f"/assets/img/{fname}", w, h, T(lang, *alt), [T(lang, *n) for n in notes])
     screens = ""
     if extra:
         close = T(lang, "Close", "Fermer"); prv = T(lang, "Previous screenshot", "Capture précédente"); nxt = T(lang, "Next screenshot", "Capture suivante")
@@ -496,7 +486,7 @@ def contact(lang):
     rows = [(T(lang, "Email", "E-mail"), f'<a href="mailto:{EMAIL}">{EMAIL}</a>'),
 
             (T(lang, "Location", "Localisation"), f"{CITY}, {COUNTRY}"),
-            (T(lang, "Time zone", "Fuseau horaire"), T(lang, "UTC+3, most of the European working day", "UTC+3, la plupart des heures de bureau européennes"))]
+            (T(lang, "Time zone", "Fuseau horaire"), "UTC+3")]
     dl = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in rows)
     body = page_head(lang, pg["h1"], pg["lead"], cr) + f'<section class="frame block split" aria-label="{T(lang, "Contact details", "Coordonnées")}"><div></div><div><dl class="skills contact-list">{dl}</dl><p class="reach__also">{T(lang, "Email is my preferred contact. You can also find me on:", "L&#39;e-mail est mon contact préféré. Vous me trouverez aussi sur :")}</p>{social_buttons(lang)}</div></section>'
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "ContactPage", "url": url(PATHS["contact"][lang]), "inLanguage": lang, "mainEntity": {"@id": SITE_URL + "/#person"}}]

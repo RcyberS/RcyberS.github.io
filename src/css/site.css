@@ -284,7 +284,7 @@ table.data td{color:var(--ink-2)}
 .screens__hint{font-size:15px;color:var(--muted)}
 .thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
 .thumb__link{position:relative;display:flex;flex-direction:column;height:100%;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--card);text-decoration:none;color:var(--ink-2);transition:transform 240ms var(--ease-out),box-shadow 240ms var(--ease-out),border-color 200ms ease}
-.thumb__link img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:left top;border-bottom:1px solid var(--rule);transition:transform 400ms var(--ease-out)}
+.thumb__link img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:center;background:#fff;border-bottom:1px solid var(--rule);transition:transform 400ms var(--ease-out)}
 .thumb__cap{font-size:13px;line-height:1.45;padding:10px 12px 12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .thumb__open{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:rgba(15,27,45,.82);color:#fff;opacity:.9}
 .thumb__link:active{transform:scale(.98)}
@@ -389,3 +389,7 @@ main>.block:last-child{padding-bottom:104px}
   .skills>div:hover{background:linear-gradient(90deg,color-mix(in srgb,var(--signal) 8%,transparent),transparent 70%)}
   .skills>div:hover dt{color:var(--ink)}
 }
+[data-theme="dark"] .thumb__link img,[data-theme="dark"] .viewer__img{filter:brightness(.93)}
+.cert__logo img[src$="csa.png"]{width:60px;height:auto}
+.thumbs:has(>li:nth-child(7))>li:first-child{grid-column:span 2}
+@media (max-width:639px){.thumbs:has(>li:nth-child(7))>li:first-child{grid-column:auto}}
