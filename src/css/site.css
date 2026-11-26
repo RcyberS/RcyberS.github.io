@@ -405,7 +405,7 @@ main>.block:last-child{padding-bottom:104px}
 @media (max-width:639px){.doc__facts>div:nth-last-child(2){border-bottom:1px solid var(--rule)}}
 
 /* portrait */
-.top__avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--field)}
+.top__avatar{width:40px;height:40px;object-position:center top;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--field)}
 .top__name{gap:12px}
 .top__name::before{order:2}
 .top__label{order:3}

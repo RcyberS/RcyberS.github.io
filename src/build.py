@@ -162,7 +162,7 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <a class="skip" href="#main">{ui['skip']}</a>
 <header class="top{' top--home' if key == 'home' else ''}">
   <div class="frame top__row">
-    <a class="top__name" href="{PATHS['home'][lang]}"><img class="top__avatar" src="/assets/img/stephanio-96.webp" width="34" height="34" alt="" decoding="async"><span class="top__label">{NAME}</span></a>
+    <a class="top__name" href="{PATHS['home'][lang]}"><img class="top__avatar" src="/assets/img/stephanio-96.webp" width="40" height="40" alt="" decoding="async"><span class="top__label">{NAME}</span></a>
     <nav class="top__nav" aria-label="{T(lang, 'Main', 'Principale')}"><ul>{''.join(nav)}</ul></nav>
     <div class="top__tools">
       <div class="lang" role="group" aria-label="{ui['lang_label']}">{'<span class="lang__sep" aria-hidden="true">/</span>'.join(langs)}</div>
