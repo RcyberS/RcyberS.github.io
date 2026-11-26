@@ -22,3 +22,4 @@ CF_ANALYTICS_TOKEN = ""
 # Leave empty to show contact links only, with no form.
 WEB3FORMS_KEY = ""
 INDEED = ""  # public Indeed profile link, empty = hidden
+FULL_NAME = "RAZARISON ROMEO Bienvenu Stephanio"

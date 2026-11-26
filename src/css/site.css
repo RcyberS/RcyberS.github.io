@@ -393,3 +393,13 @@ main>.block:last-child{padding-bottom:104px}
 .cert__logo img[src$="csa.png"]{width:60px;height:auto}
 .thumbs:has(>li:nth-child(7))>li:first-child{grid-column:span 2}
 @media (max-width:639px){.thumbs:has(>li:nth-child(7))>li:first-child{grid-column:auto}}
+
+/* facts beside a case: small label, stronger value */
+.doc__facts{display:grid;gap:0;padding:6px 22px;border:1px solid var(--rule);border-radius:14px;background:var(--card)}
+.doc__facts>div{padding:14px 0;border-bottom:1px solid var(--rule)}
+.doc__facts>div:last-child{border-bottom:0}
+.doc__facts dt{font-size:12px;line-height:1.3;color:var(--muted);letter-spacing:.03em}
+.doc__facts dd{margin-top:5px;font-size:16px;line-height:1.45;font-weight:550;color:var(--ink)}
+.doc__facts dd a{font-weight:600;color:var(--accent);text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+@media (max-width:1023px){.doc__facts{gap:0 24px}.doc__facts>div:nth-last-child(2){border-bottom:0}}
+@media (max-width:639px){.doc__facts>div:nth-last-child(2){border-bottom:1px solid var(--rule)}}

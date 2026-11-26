@@ -495,18 +495,13 @@ def contact(lang):
 def privacy(lang):
     pg = PAGES["privacy"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["privacy"][lang])]
-    upd = LAST_UPDATED
     if lang == "en":
-        s = [f"<p>Last updated: {upd}.</p>",
-             f"<h2>Who is responsible</h2><p>This website is published by {NAME}, {CITY}, {COUNTRY}. For any question about your data, email <a href=\"mailto:{EMAIL}\">{EMAIL}</a>.</p>",
+        s = [f"<h2>Who is responsible</h2><p>This website is published by {NAME}, {CITY}, {COUNTRY}. For any question about your data, email <a href=\"mailto:{EMAIL}\">{EMAIL}</a>.</p>",
              "<h2>No cookies</h2><p>This site does not set any cookies and does not use advertising or tracking cookies.</p>",
-             "<h2>Preferences stored in your browser</h2><p>If you switch the theme or the language, your choice is saved in your browser's local storage (the keys <code>theme</code> and <code>lang</code>) so the site remembers it. It never leaves your device. You can remove it by clearing your browser's site data.</p>",
-             "<h2>Hosting</h2><p>The site is hosted by GitHub Pages (GitHub, Inc., USA). Like any web host, GitHub processes technical data such as your IP address to deliver the pages and keep the service secure. See the <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" rel=\"noopener\">GitHub privacy statement</a>.</p>"]
+             "<h2>Preferences stored in your browser</h2><p>If you switch the theme or the language, your choice is saved in your browser's local storage (the keys <code>theme</code> and <code>lang</code>) so the site remembers it. It never leaves your device. You can remove it by clearing your browser's site data.</p>"]
         if GA4_ID:
-            s[2] = "<h2>Cookies</h2><p>This site uses cookies for visit statistics with Google Analytics, never for advertising.</p>"
-            s.append("<h2>Visit statistics (Google Analytics)</h2><p>I use Google Analytics 4 to count visits and see which pages are read, from which country and on which type of device. Google Analytics sets the cookies <code>_ga</code> and <code>_ga_*</code>, which last up to 2 years. Google does not record or store IP addresses in Google Analytics 4. Data is kept for 14 months, then deleted.</p>"
-                     "<p>The data is processed by Google (Google Ireland Limited for visitors in Europe, Google LLC in the USA). Google LLC is certified under the EU-US Data Privacy Framework. See <a href=\"https://policies.google.com/privacy\" rel=\"noopener\">Google's privacy policy</a> and <a href=\"https://policies.google.com/technologies/partner-sites\" rel=\"noopener\">how Google uses data from sites that use its services</a>.</p>"
-                     "<p>You can block these cookies in your browser settings, or install <a href=\"https://tools.google.com/dlpage/gaoptout\" rel=\"noopener\">Google's opt-out add-on</a>.</p>")
+            s[1] = ("<h2>Visit statistics</h2><p>To count visits and see which pages are read, this site uses Google Analytics, which sets the cookies <code>_ga</code> and <code>_ga_*</code> for up to 2 years. "
+                    "It is never used for advertising. You can block these cookies in your browser settings.</p>")
         elif CF_ANALYTICS_TOKEN:
             s.append("<h2>Visit statistics</h2><p>I use Cloudflare Web Analytics to count visits and see which pages are read. It does not use cookies, does not store your IP address and does not follow you across other websites. Data is processed by Cloudflare, Inc. (USA). See the <a href=\"https://www.cloudflare.com/privacypolicy/\" rel=\"noopener\">Cloudflare privacy policy</a>.</p>")
         elif not GA4_ID:
@@ -518,16 +513,12 @@ def privacy(lang):
         s.append("<h2>Links to other sites</h2><p>Links to LinkedIn and Upwork open those services, which apply their own privacy policies.</p>")
         s.append(f"<h2>Your rights</h2><p>You can ask to see, correct or delete the personal data I hold about you by emailing <a href=\"mailto:{EMAIL}\">{EMAIL}</a>. I'll reply within one month. If you are in the European Union, you can also contact your data protection authority.</p>")
     else:
-        s = [f"<p>Dernière mise à jour : {upd}.</p>",
-             f"<h2>Responsable</h2><p>Ce site est édité par {NAME}, {CITY}, {COUNTRY}. Pour toute question sur vos données, écrivez à <a href=\"mailto:{EMAIL}\">{EMAIL}</a>.</p>",
+        s = [f"<h2>Responsable</h2><p>Ce site est édité par {NAME}, {CITY}, {COUNTRY}. Pour toute question sur vos données, écrivez à <a href=\"mailto:{EMAIL}\">{EMAIL}</a>.</p>",
              "<h2>Aucun cookie</h2><p>Ce site ne dépose aucun cookie et n'utilise aucun cookie publicitaire ou de suivi.</p>",
-             "<h2>Préférences enregistrées dans votre navigateur</h2><p>Si vous changez le thème ou la langue, votre choix est enregistré dans le stockage local de votre navigateur (clés <code>theme</code> et <code>lang</code>) pour que le site s'en souvienne. Il ne quitte jamais votre appareil. Vous pouvez le supprimer en effaçant les données du site dans votre navigateur.</p>",
-             "<h2>Hébergement</h2><p>Le site est hébergé par GitHub Pages (GitHub, Inc., États-Unis). Comme tout hébergeur, GitHub traite des données techniques, comme votre adresse IP, pour servir les pages et sécuriser le service. Voir la <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\" rel=\"noopener\" hreflang=\"en\">déclaration de confidentialité de GitHub</a> (en anglais).</p>"]
+             "<h2>Préférences enregistrées dans votre navigateur</h2><p>Si vous changez le thème ou la langue, votre choix est enregistré dans le stockage local de votre navigateur (clés <code>theme</code> et <code>lang</code>) pour que le site s'en souvienne. Il ne quitte jamais votre appareil. Vous pouvez le supprimer en effaçant les données du site dans votre navigateur.</p>"]
         if GA4_ID:
-            s[2] = "<h2>Cookies</h2><p>Ce site utilise des cookies pour les statistiques de visite avec Google Analytics, jamais pour la publicité.</p>"
-            s.append("<h2>Statistiques de visite (Google Analytics)</h2><p>J'utilise Google Analytics 4 pour compter les visites et voir quelles pages sont lues, depuis quel pays et sur quel type d'appareil. Google Analytics dépose les cookies <code>_ga</code> et <code>_ga_*</code>, valables jusqu'à 2 ans. Google n'enregistre ni ne conserve les adresses IP dans Google Analytics 4. Les données sont conservées 14 mois, puis supprimées.</p>"
-                     "<p>Les données sont traitées par Google (Google Ireland Limited pour les visiteurs en Europe, Google LLC aux États-Unis). Google LLC est certifiée au titre du cadre de protection des données UE-États-Unis (Data Privacy Framework). Voir les <a href=\"https://policies.google.com/privacy?hl=fr\" rel=\"noopener\">règles de confidentialité de Google</a> et la page <a href=\"https://policies.google.com/technologies/partner-sites?hl=fr\" rel=\"noopener\">sur l'utilisation des données par Google sur les sites partenaires</a>.</p>"
-                     "<p>Vous pouvez bloquer ces cookies dans les réglages de votre navigateur, ou installer <a href=\"https://tools.google.com/dlpage/gaoptout?hl=fr\" rel=\"noopener\">le module de désactivation de Google</a>.</p>")
+            s[1] = ("<h2>Statistiques de visite</h2><p>Pour compter les visites et voir quelles pages sont lues, ce site utilise Google Analytics, qui dépose les cookies <code>_ga</code> et <code>_ga_*</code> pour 2 ans au plus. "
+                    "Ils ne servent jamais à la publicité. Vous pouvez les bloquer dans les réglages de votre navigateur.</p>")
         elif CF_ANALYTICS_TOKEN:
             s.append("<h2>Statistiques de visite</h2><p>J'utilise Cloudflare Web Analytics pour compter les visites et voir quelles pages sont lues. Ce service n'utilise pas de cookies, ne conserve pas votre adresse IP et ne vous suit pas sur d'autres sites. Les données sont traitées par Cloudflare, Inc. (États-Unis). Voir la <a href=\"https://www.cloudflare.com/fr-fr/privacypolicy/\" rel=\"noopener\">politique de confidentialité de Cloudflare</a>.</p>")
         elif not GA4_ID:
@@ -545,13 +536,11 @@ def legal(lang):
     pg = PAGES["legal"][lang]
     cr = [(UI[lang]["crumb_home"], PATHS["home"][lang]), (pg["h1"], PATHS["legal"][lang])]
     if lang == "en":
-        s = [f"<h2>Publisher</h2><p>{NAME}, private individual<br>{CITY}, {COUNTRY}<br>Email: <a href=\"mailto:{EMAIL}\">{EMAIL}</a></p><p>Publication director: {NAME}.</p>",
-             "<h2>Host</h2><p>GitHub, Inc.<br>88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA<br><a href=\"https://pages.github.com\" rel=\"noopener\">pages.github.com</a></p>",
+        s = [f"<h2>Publisher</h2><p>{FULL_NAME}, private individual<br>{CITY}, {COUNTRY}<br>Email: <a href=\"mailto:{EMAIL}\">{EMAIL}</a></p><p>Publication director: {FULL_NAME}.</p>",
              "<h2>Content</h2><p>The texts on this site are the property of their author. Product and company names belong to their respective owners and are cited only to describe the work done.</p>",
              f"<h2>Personal data</h2><p>See the <a href=\"{PATHS['privacy'][lang]}\">privacy policy</a>.</p>"]
     else:
-        s = [f"<h2>Éditeur</h2><p>{NAME}, particulier<br>{CITY}, {COUNTRY}<br>E-mail : <a href=\"mailto:{EMAIL}\">{EMAIL}</a></p><p>Directeur de la publication : {NAME}.</p>",
-             "<h2>Hébergeur</h2><p>GitHub, Inc.<br>88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis<br><a href=\"https://pages.github.com\" rel=\"noopener\">pages.github.com</a></p>",
+        s = [f"<h2>Éditeur</h2><p>{FULL_NAME}, particulier<br>{CITY}, {COUNTRY}<br>E-mail : <a href=\"mailto:{EMAIL}\">{EMAIL}</a></p><p>Directeur de la publication : {FULL_NAME}.</p>",
              "<h2>Contenu</h2><p>Les textes de ce site sont la propriété de leur auteur. Les noms de produits et d'entreprises appartiennent à leurs propriétaires respectifs et ne sont cités que pour décrire le travail réalisé.</p>",
              f"<h2>Données personnelles</h2><p>Voir la <a href=\"{PATHS['privacy'][lang]}\">politique de confidentialité</a>.</p>"]
     body = page_head(lang, pg["h1"], "", cr) + f'<section class="frame doc doc--single"><div class="doc__body prose legal">{"".join(s)}</div></section>'
