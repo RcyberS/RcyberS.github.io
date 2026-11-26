@@ -364,7 +364,6 @@ def home(lang):
     body = f"""<section class="hero" aria-labelledby="hello">
   <div class="frame hero__grid">
     <div class="hero__main">
-      <img class="hero__photo enter" data-d="0" src="/assets/img/stephanio.webp" width="480" height="480" alt="{T(lang, "Portrait of Stephanio RAZARISON", "Portrait de Stephanio RAZARISON")}" decoding="async" fetchpriority="high">
       <h1 id="hello" class="enter" data-d="0">{NAME}</h1>
       <p class="hero__role enter" data-d="1">{role}</p>
       <p class="hero__where enter" data-d="2">{where}</p>
@@ -475,7 +474,7 @@ def about(lang):
     skills = "".join(f"<div><dt>{h}</dt><dd>{t}</dd></div>" for h, t in SKILLS[lang])
     certs = "".join(f"<div><dt>{n}</dt><dd>{d}</dd></div>" for n, d in CERTS[lang])
     h_xp, h_sk, h_ce = T(lang, ("Experience", "Skills and tools", "Certifications and education"), ("Expérience", "Compétences et outils", "Certifications et formation"))
-    body = page_head(lang, pg["h1"], pg["lead"], cr, photo=True) + f"""
+    body = page_head(lang, pg["h1"], pg["lead"], cr) + f"""
 <section class="frame block split" aria-labelledby="xp"><div class="block__head"><h2 id="xp">{h_xp}</h2></div><ol class="jobs">{xp}</ol></section>
 <section class="frame block split" aria-labelledby="sk"><div class="block__head"><h2 id="sk">{h_sk}</h2></div><dl class="skills">{skills}</dl></section>
 <section class="frame block split" aria-labelledby="ce"><div class="block__head"><h2 id="ce">{h_ce}</h2></div>{cert_list(lang)}</section>
