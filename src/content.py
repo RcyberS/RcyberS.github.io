@@ -120,7 +120,7 @@ SKILLS = {
         ("Detection engineering", "Custom rules and decoders, correlation rules, detection use cases, MITRE ATT&amp;CK mapping, alert tuning"),
         ("Network security", "Firewalls (Sophos, Stormshield, Huawei USG), Suricata IDS/IPS, WAF, IPsec VPN"),
         ("Routing and switching", "Cisco, Huawei, HPE Aruba and ProCurve: OSPF, BGP, MPLS, VLAN, 802.1X, VRRP"),
-        ("Identity and Active Directory", "Keycloak SSO, MFA, OIDC and SAML, Active Directory and Kerberos, AD audits (ORADAD, PingCastle, BloodHound)"),
+        ("Identity and access management (IAM)", "Keycloak SSO, MFA, OIDC and SAML, Active Directory and Kerberos, AD audits (ORADAD, PingCastle, BloodHound)"),
         ("Automation", "Python and Bash, regular expressions, analysis of large log datasets"),
         ("Testing", "Penetration tests, Kerberoasting and Pass-the-Hash testing, vulnerability scanning (OpenVAS), Internet exposure reviews"),
         ("Frameworks", "MITRE ATT&amp;CK, NIST CSF, NIST SP 800-61, ISO 27001, GDPR"),
@@ -132,7 +132,7 @@ SKILLS = {
         ("Ingénierie de détection", "Règles et décodeurs sur mesure, règles de corrélation, cas d'usage de détection, mapping MITRE ATT&amp;CK, réglage des alertes"),
         ("Sécurité réseau", "Pare-feu (Sophos, Stormshield, Huawei USG), IDS/IPS Suricata, WAF, VPN IPsec"),
         ("Routage et commutation", "Cisco, Huawei, HPE Aruba et ProCurve : OSPF, BGP, MPLS, VLAN, 802.1X, VRRP"),
-        ("Identité et Active Directory", "SSO Keycloak, MFA, OIDC et SAML, Active Directory et Kerberos, audits AD (ORADAD, PingCastle, BloodHound)"),
+        ("Gestion des identités et des accès (IAM)", "SSO Keycloak, MFA, OIDC et SAML, Active Directory et Kerberos, audits AD (ORADAD, PingCastle, BloodHound)"),
         ("Automatisation", "Python et Bash, expressions régulières, analyse de grands volumes de journaux"),
         ("Tests", "Tests d'intrusion, tests Kerberoasting et Pass-the-Hash, scan de vulnérabilités (OpenVAS), revue de l'exposition Internet"),
         ("Référentiels", "MITRE ATT&amp;CK, NIST CSF, NIST SP 800-61, ISO 27001, RGPD"),
@@ -414,15 +414,15 @@ PROJECTS_RAW = [
     "case": "CASE-05",
     "status": {"en": "In production", "fr": "En production"},
     "flow": {"en": ["Active Directory", "Keycloak + MFA", "Apps"], "fr": ["Active Directory", "Keycloak + MFA", "Applications"]},
-    "card": {"en": "One Keycloak login with MFA for the security tools and business apps.", "fr": "Un seul identifiant Keycloak avec MFA pour les outils et les applications."},
-    "title": {"en": "Single sign-on with MFA", "fr": "Authentification unique avec MFA"},
+    "card": {"en": "IAM on Keycloak: one login with MFA for the security tools and business apps.", "fr": "IAM sur Keycloak : un seul identifiant avec MFA pour les outils et les applications."},
+    "title": {"en": "Identity and access management: SSO with MFA", "fr": "Gestion des identités et des accès : SSO avec MFA"},
     "summary": {"en": "One Keycloak login with one-time-password MFA, backed by Active Directory, for the security tools and business applications.",
                 "fr": "Un seul identifiant Keycloak avec MFA par mot de passe à usage unique, adossé à Active Directory, pour les outils de sécurité et les applications métier."},
     "meta": {"en": "AVEOLYS", "fr": "AVEOLYS"},
     "role": {"en": "Design and deployment", "fr": "Conception et déploiement"},
     "org": {"en": "AVEOLYS, Antananarivo", "fr": "AVEOLYS, Antananarivo"},
     "period": {"en": "Since 2023", "fr": "Depuis 2023"},
-    "tools": ["Keycloak", "Active Directory", "Kerberos", "OIDC", "SAML"],
+    "tools": ["Keycloak", "IAM", "Active Directory", "Kerberos", "OIDC", "SAML"],
     "body": {
       "en": """<h2>The goal</h2>
 <p>Each application had its own accounts and passwords. More accounts mean more passwords to steal, and leavers whose access is forgotten somewhere.</p>
@@ -431,10 +431,11 @@ PROJECTS_RAW = [
 <ul class="list">
 <li><strong>Keycloak</strong> as the identity provider, connected to Active Directory and Kerberos, so staff use their usual company account.</li>
 <li><strong>One-time-password MFA</strong> on top of the password.</li>
+<li><strong>Login events</strong> recorded in Keycloak, so every access can be traced.</li>
 <li>Applications connected over <strong>OIDC</strong> or <strong>SAML</strong>, including Wazuh, Shuffle, Zimbra, Microsoft 365, Bitdefender GravityZone, KaseyaOne, the internal wiki and the internal ERP.</li>
 </ul>
 <h2>Result</h2>
-<p>Staff have one account to protect, and removing someone's access happens in one place.</p>""",
+<p>Staff have one account to protect, and removing someone's access happens in one place. That is the base of identity and access management: one identity per person, and access granted or removed centrally.</p>""",
       "fr": """<h2>L'objectif</h2>
 <p>Chaque application avait ses propres comptes et mots de passe. Plus de comptes, c'est plus de mots de passe à voler, et des accès oubliés quelque part quand quelqu'un part.</p>
 <h2>Ce que j'ai déployé</h2>
@@ -442,10 +443,11 @@ PROJECTS_RAW = [
 <ul class="list">
 <li><strong>Keycloak</strong> comme fournisseur d'identité, relié à Active Directory et Kerberos : chacun utilise son compte habituel de l'entreprise.</li>
 <li><strong>MFA par mot de passe à usage unique</strong> en plus du mot de passe.</li>
+<li><strong>Événements de connexion</strong> enregistrés dans Keycloak : chaque accès peut être retracé.</li>
 <li>Applications raccordées en <strong>OIDC</strong> ou <strong>SAML</strong>, dont Wazuh, Shuffle, Zimbra, Microsoft 365, Bitdefender GravityZone, KaseyaOne, le wiki interne et l'ERP interne.</li>
 </ul>
 <h2>Résultat</h2>
-<p>Chacun n'a plus qu'un compte à protéger, et la suppression d'un accès se fait à un seul endroit.</p>""",
+<p>Chacun n'a plus qu'un compte à protéger, et la suppression d'un accès se fait à un seul endroit. C'est la base de la gestion des identités et des accès : une identité par personne, et des droits accordés ou retirés de façon centralisée.</p>""",
     },
   },
 ]

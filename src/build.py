@@ -162,7 +162,7 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 <a class="skip" href="#main">{ui['skip']}</a>
 <header class="top{' top--home' if key == 'home' else ''}">
   <div class="frame top__row">
-    <a class="top__name" href="{PATHS['home'][lang]}">{NAME}</a>
+    <a class="top__name" href="{PATHS['home'][lang]}"><img class="top__avatar" src="/assets/img/stephanio-96.webp" width="34" height="34" alt="" decoding="async"><span class="top__label">{NAME}</span></a>
     <nav class="top__nav" aria-label="{T(lang, 'Main', 'Principale')}"><ul>{''.join(nav)}</ul></nav>
     <div class="top__tools">
       <div class="lang" role="group" aria-label="{ui['lang_label']}">{'<span class="lang__sep" aria-hidden="true">/</span>'.join(langs)}</div>
@@ -189,11 +189,13 @@ def layout(lang, key, path, alt_path, title, desc, body, ld=None, og_type="websi
 """
 
 # ---------- shared blocks ----------
-def page_head(lang, h1, lead, crumbs, case=None):
+def page_head(lang, h1, lead, crumbs, case=None, photo=False):
     lead_html = f'<p class="lede">{lead}</p>' if lead else ""
     tag = f'<p class="case-tag">{case}</p>' if case else ""
-    return (f'<section class="frame head" aria-labelledby="page-h">{crumbs_html(lang, crumbs)}{tag}'
-            f'<h1 id="page-h">{h1}</h1>{lead_html}</section>')
+    pic = (f'<img class="head__photo" src="/assets/img/stephanio.webp" width="480" height="480" alt="{T(lang, "Portrait of Stephanio RAZARISON", "Portrait de Stephanio RAZARISON")}" decoding="async">'
+           if photo else "")
+    return (f'<section class="frame head{" head--photo" if photo else ""}" aria-labelledby="page-h"><div class="head__text">{crumbs_html(lang, crumbs)}{tag}'
+            f'<h1 id="page-h">{h1}</h1>{lead_html}</div>{pic}</section>')
 
 def case_grid(lang, h="h3", cta=True):
     """The six cases as a bento: CASE-01 wide, a closing card that asks for contact."""
@@ -362,6 +364,7 @@ def home(lang):
     body = f"""<section class="hero" aria-labelledby="hello">
   <div class="frame hero__grid">
     <div class="hero__main">
+      <img class="hero__photo enter" data-d="0" src="/assets/img/stephanio.webp" width="480" height="480" alt="{T(lang, "Portrait of Stephanio RAZARISON", "Portrait de Stephanio RAZARISON")}" decoding="async" fetchpriority="high">
       <h1 id="hello" class="enter" data-d="0">{NAME}</h1>
       <p class="hero__role enter" data-d="1">{role}</p>
       <p class="hero__where enter" data-d="2">{where}</p>
@@ -472,7 +475,7 @@ def about(lang):
     skills = "".join(f"<div><dt>{h}</dt><dd>{t}</dd></div>" for h, t in SKILLS[lang])
     certs = "".join(f"<div><dt>{n}</dt><dd>{d}</dd></div>" for n, d in CERTS[lang])
     h_xp, h_sk, h_ce = T(lang, ("Experience", "Skills and tools", "Certifications and education"), ("Expérience", "Compétences et outils", "Certifications et formation"))
-    body = page_head(lang, pg["h1"], pg["lead"], cr) + f"""
+    body = page_head(lang, pg["h1"], pg["lead"], cr, photo=True) + f"""
 <section class="frame block split" aria-labelledby="xp"><div class="block__head"><h2 id="xp">{h_xp}</h2></div><ol class="jobs">{xp}</ol></section>
 <section class="frame block split" aria-labelledby="sk"><div class="block__head"><h2 id="sk">{h_sk}</h2></div><dl class="skills">{skills}</dl></section>
 <section class="frame block split" aria-labelledby="ce"><div class="block__head"><h2 id="ce">{h_ce}</h2></div>{cert_list(lang)}</section>

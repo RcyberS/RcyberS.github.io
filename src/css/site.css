@@ -403,3 +403,18 @@ main>.block:last-child{padding-bottom:104px}
 .doc__facts dd a{font-weight:600;color:var(--accent);text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent)}
 @media (max-width:1023px){.doc__facts{gap:0 24px}.doc__facts>div:nth-last-child(2){border-bottom:0}}
 @media (max-width:639px){.doc__facts>div:nth-last-child(2){border-bottom:1px solid var(--rule)}}
+
+/* portrait */
+.top__avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--field)}
+.top__name{gap:12px}
+.top__name::before{order:2}
+.top__label{order:3}
+.hero__photo{width:112px;height:112px;border-radius:50%;object-fit:cover;margin-bottom:28px;border:3px solid var(--paper);box-shadow:0 0 0 2px var(--gold);background:var(--field)}
+.head--photo{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 56px;align-items:end}
+.head__photo{width:200px;height:200px;border-radius:50%;object-fit:cover;border:4px solid var(--paper);box-shadow:0 0 0 2px var(--gold);background:var(--field)}
+@media (max-width:639px){
+  .hero__photo{width:88px;height:88px;margin-bottom:22px}
+  .head--photo{grid-template-columns:1fr}
+  .head__photo{width:140px;height:140px;grid-row:1}
+  .top__avatar{width:30px;height:30px}
+}
