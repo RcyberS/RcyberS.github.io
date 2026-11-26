@@ -16,8 +16,8 @@ UI = {
         "crumb_home": "Home",
         "read_project": "Read the case study",
         "all_projects": "All projects",
-        "prev": "Previous project",
-        "next": "Next project",
+        "prev": "Previous case",
+        "next": "Next case",
         "aside": {"role": "My role", "org": "Where", "period": "When", "tools": "Tools"},
     },
     "fr": {
@@ -32,8 +32,8 @@ UI = {
         "crumb_home": "Accueil",
         "read_project": "Lire l'étude de cas",
         "all_projects": "Tous les projets",
-        "prev": "Projet précédent",
-        "next": "Projet suivant",
+        "prev": "Cas précédent",
+        "next": "Cas suivant",
         "aside": {"role": "Mon rôle", "org": "Où", "period": "Quand", "tools": "Outils"},
     },
 }
@@ -212,7 +212,7 @@ PROJECTS_RAW = [
     "role": {"en": "Rule design, testing and tuning", "fr": "Conception, test et réglage des règles"},
     "org": {"en": "AVEOLYS, Antananarivo", "fr": "AVEOLYS, Antananarivo"},
     "period": {"en": "2023 – present", "fr": "2023 – aujourd'hui"},
-    "tools": ["Wazuh rules and decoders", "MITRE ATT&amp;CK", "Sysmon", "Microsoft 365"],
+    "tools": ["Wazuh", "MITRE ATT&amp;CK", "Sysmon", "Microsoft 365"],
     "body": {
       "en": """<h2>The problem</h2>
 <p>Out of the box, a SIEM either misses what matters or floods the team. I wrote custom rules for the systems we actually run, and tuned the ones that produced noise.</p>

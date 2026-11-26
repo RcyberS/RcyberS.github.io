@@ -202,7 +202,8 @@ def case_grid(lang, h="h3", cta=True):
     cards = []
     for i, p in enumerate(PROJECTS):
         live = p["status"]["en"] == "In production"
-        tools = "".join(f"<li>{t}</li>" for t in p["tools"][:4])
+        wide = i in (0, 5)
+        tools = "".join(f"<li>{t}</li>" for t in (p["tools"] if wide else p["tools"][:4]))
         n = len(SHOTS.get(p["case"], []))
         shots = f'<p class="card__shots">{T(lang, f"{n} screenshots inside", f"{n} captures à l&#39;intérieur")}</p>' if n else ""
         flow = ""
@@ -212,7 +213,7 @@ def case_grid(lang, h="h3", cta=True):
   <a class="card__link" href="{project_path(p, lang)}">
     <span class="card__top"><span class="card__id">{p['case']}</span><span class="status{' status--live' if live else ''}"><span class="status__dot" aria-hidden="true"></span>{p['status'][lang]}</span></span>
     <{h} class="card__title">{p['title'][lang]}</{h}>
-    <p class="card__line">{p['card'][lang]}</p>
+    <p class="card__line">{p['summary'][lang] if wide else p['card'][lang]}</p>
     {shots}
     <ul class="chips" aria-label="{T(lang, 'Tools', 'Outils')}">{tools}</ul>
     <span class="card__go">{T(lang, 'Open the case', 'Ouvrir le cas')} {ARROW}</span>
@@ -411,7 +412,7 @@ def home(lang):
     <div><h2 id="ct-h">{contact_h}</h2><p>{contact_p}</p></div>
     <div class="reach__links">
       <a class="reach__mail" href="mailto:{EMAIL}">{EMAIL}</a>
-      <p class="reach__also">{T(lang, "Email is the best way to reach me. You can also find me on:", "L'e-mail reste le meilleur moyen de me joindre. Vous me trouverez aussi sur :")}</p>
+      <p class="reach__also">{T(lang, "You can also find me on:", "Vous me trouverez aussi sur :")}</p>
       {social_buttons(lang)}
     </div>
   </div>
@@ -445,7 +446,7 @@ def project(lang, i):
     screens = ""
     if extra:
         close = T(lang, "Close", "Fermer"); prv = T(lang, "Previous screenshot", "Capture précédente"); nxt = T(lang, "Next screenshot", "Capture suivante")
-        screens = (f'<section id="screens" class="screens"><h2>{T(lang, "Screenshots", "Captures")}</h2>'
+        screens = (f'<section id="screens" class="frame screens"><h2>{T(lang, "Screenshots", "Captures")}</h2>'
                    f'<p class="screens__hint">{T(lang, "Select a screenshot to see it full size, with its notes. Sensitive data is blurred.", "Sélectionnez une capture pour la voir en grand, avec ses notes. Les données sensibles sont floutées.")}</p>'
                    f'<ul class="thumbs" role="list">{extra}</ul></section>'
                    f'<dialog class="viewer" aria-label="{T(lang, "Screenshot", "Capture")}"><div class="viewer__bar"><span class="viewer__count"></span>'
@@ -455,11 +456,12 @@ def project(lang, i):
                    f'<img class="viewer__img" alt=""><ol class="notes viewer__notes"></ol></dialog>')
     body = page_head(lang, p["title"][lang], p["summary"][lang], cr, case=p["case"]) + f"""<div class="frame doc">
 <dl class="doc__facts margin">{facts_html}</dl>
-<article class="doc__body prose">{p['body'][lang]}{screens}</article>
+<article class="doc__body prose">{p['body'][lang]}</article>
 </div>
+{screens}
 <nav class="frame pager" aria-label="{T(lang, 'Other cases', 'Autres cas')}">
-<a href="{project_path(prev_p, lang)}"><span class="sr-only">{ui['prev']} : </span><span class="case-tag">{prev_p['case']}</span> {prev_p['title'][lang]}</a>
-<a href="{project_path(next_p, lang)}"><span class="sr-only">{ui['next']} : </span><span class="case-tag">{next_p['case']}</span> {next_p['title'][lang]}</a>
+<a href="{project_path(prev_p, lang)}"><span class="pager__dir">← {ui['prev']}</span><span class="case-tag">{prev_p['case']}</span> {prev_p['title'][lang]}</a>
+<a class="pager__next" href="{project_path(next_p, lang)}"><span class="pager__dir">{ui['next']} →</span><span class="case-tag">{next_p['case']}</span> {next_p['title'][lang]}</a>
 </nav>"""
     pg_title = f"{p['case']} {p['title'][lang]} | {NAME}"
     ld = [breadcrumbs_ld(cr), {"@context": "https://schema.org", "@type": "CreativeWork", "name": p["title"][lang], "description": p["summary"][lang],
