@@ -616,6 +616,9 @@ def main():
 <xhtml:link rel="alternate" hreflang="en" href="{url(en)}"/><xhtml:link rel="alternate" hreflang="fr" href="{url(fr)}"/><xhtml:link rel="alternate" hreflang="x-default" href="{url(en)}"/></url>""")
     with open(os.path.join(ROOT, "sitemap.xml"), "w") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(sitemap) + "\n</urlset>\n")
+    # custom domain for GitHub Pages (taken from SITE_URL)
+    with open(os.path.join(ROOT, "CNAME"), "w") as f:
+        f.write(SITE_URL.split("://", 1)[1] + "\n")
     with open(os.path.join(ROOT, "robots.txt"), "w") as f:
         f.write(f"User-agent: *\nAllow: /\nDisallow: /src/\n\nSitemap: {SITE_URL}/sitemap.xml\n")
     with open(os.path.join(ROOT, "site.webmanifest"), "w") as f:

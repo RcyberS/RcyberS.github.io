@@ -1,6 +1,6 @@
 # Site-wide settings. Change these, then run: python3 src/build.py
 
-SITE_URL = "https://rcybers.github.io"   # no trailing slash; change when the custom domain is live
+SITE_URL = "https://stephaniorazarison.com"   # no trailing slash
 NAME = "Stephanio RAZARISON"
 EMAIL = "rbienvenustephanio@gmail.com"
 LINKEDIN = "https://www.linkedin.com/in/razarison-romeo-bienvenu-stephanio-1a72b618a"

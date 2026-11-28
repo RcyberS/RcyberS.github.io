@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /src/
 
-Sitemap: https://rcybers.github.io/sitemap.xml
+Sitemap: https://stephaniorazarison.com/sitemap.xml
